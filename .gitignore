@@ -1,0 +1,10 @@
+bin
+*/bin
+**/bin
+
+bin/*
+*/bin/*
+**/bin/*
+
+usedbins
+usedbins/*

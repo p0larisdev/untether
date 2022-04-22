@@ -16,7 +16,8 @@ clang	-I $(pwd)/inc/														\
 		-o bin/main															\
 		-D__WHOAMI__="\"$(whoami)\""										\
 		-D__PWD__="\"$(pwd)\""												\
-		-g 
+		-g
+#		-rdynamic
 
 # build armv7 (for untether install)
 xcrun -sdk iphoneos clang -arch armv7	src/main.c							\

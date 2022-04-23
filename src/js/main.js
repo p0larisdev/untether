@@ -44,8 +44,8 @@ function main() {
 
 	var i = 0;
 	while (true) {
-		calls4arg("syslog", 0x28, sptr("get rekt from jsc %d (slide=%x)\n"), i, 0);
-		calls4arg("sleep", 0, 0, 0, 0);
+		calls4arg("syslog", 0x28, sptr("get rekt from jsc %d (slide=%x)\n"), i, slide);
+		calls4arg("sleep", 1, 0, 0, 0);
 		i++;
 	}
 

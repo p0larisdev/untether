@@ -1,3 +1,10 @@
+/*
+ *  november 24th 2021
+ *  [3:16 PM] spv: spice confuses the shit out of me, so i'm prolly not smart enough to implement it anyway
+ *
+ *  ohai
+ */
+
 var MAX_SLIDE = 0x3;
 var MIN_SLIDE = 0x1;
 
@@ -25,6 +32,10 @@ function main() {
 	base = 0x4000 + (slide << 12);
 	slid = (slide << 12);
 
+	init_sptr_heap();
+
+	calls4arg("puts\0", sptr("we out here\0"), 0, 0, 0);
+
 	log("slide=0x" + slide.toString(16));
 	log("*(uint8_t*)base = 0x" + read_u8(base).toString(16));
 	log("*(uint16_t*)base = 0x" + read_u16(base).toString(16));
@@ -39,7 +50,7 @@ function main() {
 	var i = 0;
 	while (true) {
 		calls4arg("syslog\0", 0x28, sptr("get rekt from jsc %d (slide=%x)\n\0"), i, 0);
-		calls4arg("sleep", 1, 0, 0, 0);
+		calls4arg("sleep", 0, 0, 0, 0);
 		i++;
 	}
 

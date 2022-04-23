@@ -1,19 +1,19 @@
 #!/bin/bash
 
 rm exp.js
-find js -name '*.js' -exec cat {} \; >> exp.js
+find src/js -name '*.js' -exec cat {} \; >> exp.js
 echo >> exp.js
 echo "main();" >> exp.js
 
 # build for host
 clang	-I $(pwd)/inc/														\
-		src/main.c															\
-		src/ip_tools.c														\
-		src/stage0_primitives.c												\
-		src/stage1_primitives.c												\
-		src/patchfinder.c													\
-		src/stage2.c														\
-		src/shit.c															\
+		src/gen/main.c														\
+		src/gen/ip_tools.c													\
+		src/gen/stage0_primitives.c											\
+		src/gen/stage1_primitives.c											\
+		src/gen/patchfinder.c												\
+		src/gen/stage2.c													\
+		src/gen/shit.c														\
 		-o bin/main															\
 		-D__WHOAMI__="\"$(whoami)\""										\
 		-D__PWD__="\"$(pwd)\""												\
@@ -21,13 +21,13 @@ clang	-I $(pwd)/inc/														\
 #		-rdynamic
 
 # build armv7 (for untether install)
-xcrun -sdk iphoneos clang -arch armv7	src/main.c							\
-										src/ip_tools.c						\
-										src/stage0_primitives.c				\
-										src/stage1_primitives.c				\
-										src/patchfinder.c					\
-										src/stage2.c						\
-										src/shit.c							\
+xcrun -sdk iphoneos clang -arch armv7	src/gen/main.c						\
+										src/gen/ip_tools.c					\
+										src/gen/stage0_primitives.c			\
+										src/gen/stage1_primitives.c			\
+										src/gen/patchfinder.c				\
+										src/gen/stage2.c					\
+										src/gen/shit.c						\
 										-o bin/main_arm						\
 										-D__WHOAMI__="\"$(whoami)\""		\
 										-D__PWD__="\"$(pwd)\""				\

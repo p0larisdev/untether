@@ -1,5 +1,6 @@
 var global_sptr_addy = 0x150000;
 var VECTOR_OFFSET = 0x10;
+var shit_status = 0x144444;
 
 /*
  *  read uint8_t

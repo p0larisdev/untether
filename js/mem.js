@@ -1,3 +1,4 @@
+var global_sptr_addy = 0x150000;
 var VECTOR_OFFSET = 0x10;
 
 /*
@@ -145,8 +146,6 @@ function write_str(addy, s) {
 
 	return s;
 }
-
-var global_sptr_addy = 0x150000;
 
 function sptr(s) {
 	write_str(global_sptr_addy, s);

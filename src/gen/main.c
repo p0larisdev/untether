@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <dlfcn.h>
 
 #include "stage1_primitives.h"
 #include "stage0_primitives.h"
@@ -201,6 +202,8 @@ int main(int   argc,
 				__PWD__);
 	fprintf(fp, "#   - with love from spv <3\n");
 	fprintf(fp, "\n");
+
+	fprintf(stderr, "0x%x\n", RTLD_DEFAULT);
 
 	uint32_t	stack_base					= 0x1c7738; // my shell setup
 //	uint32_t	stack_base					= 0x1c7c88; // my 4s shell setup

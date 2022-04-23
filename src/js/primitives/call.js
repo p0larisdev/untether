@@ -1,6 +1,7 @@
 var gettimeofday_lazy_addy = 0x34d63d3c;
 var atan2_lazy_addy = 0x346afc84;
 var reserve_addr = 0x1a0000;
+var sym_cache = {};
 var slide = 0x0;
 var base = 0x0;
 //var slid = 0x0;
@@ -85,8 +86,14 @@ function calls4arg(sym, r0, r1, r2, r3) {
 	 *  this calls dlsym with the first arg, then uses the address it returns
 	 *  to call. so you can call with a symbol name instead of an address
 	 */
-	var dlsym_addy = read_u32(reserve_addr + 24 + slid);
-	var shc_slide = read_u32(reserve_addr + 20 + slid);
-	var addy = call4arg(dlsym_addy + shc_slide, 0xfffffffe, sptr(sym), 0, 0);
+
+	if (sym in sym_cache) {
+		var addy = sym_cache[sym];
+	} else {
+		var dlsym_addy = read_u32(reserve_addr + 24 + slid);
+		var shc_slide = read_u32(reserve_addr + 20 + slid);
+		var addy = call4arg(dlsym_addy + shc_slide, 0xfffffffe, sptr(sym), 0, 0);
+		sym_cache[sym] = addy;
+	}
 	return call4arg(addy, r0, r1, r2, r3);
 }

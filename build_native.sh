@@ -1,6 +1,7 @@
 #!/bin/bash
 
-cat js/*.js > exp.js
+rm exp.js
+find js -name '*.js' -exec cat {} \; >> exp.js
 echo >> exp.js
 echo "main();" >> exp.js
 

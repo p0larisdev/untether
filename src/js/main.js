@@ -34,8 +34,8 @@ function main() {
 
 	init_sptr_heap();
 
-	calls4arg("puts\0", sptr("we out here\0"), 0, 0, 0);
-	calls4arg("puts\0", sptr("I came through a portal holding a 40 and a blunt. Do you really wanna test me right now?\0"), 0, 0, 0);
+	puts("we out here\0");
+	puts("I came through a portal holding a 40 and a blunt. Do you really wanna test me right now?\0");
 
 	log("slide=0x" + slide.toString(16));
 	log("*(uint8_t*)base = 0x" + read_u8(base).toString(16));

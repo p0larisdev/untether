@@ -1,5 +1,7 @@
-
-
+/*
+ *  currently unused (iirc) garbage
+ *  basically just prints an address than the uint32_t there, and then +4, etc
+ */
 function prim_dump_u32(buf) {
 	s = "";
 
@@ -29,6 +31,9 @@ function prim_dump_u32(buf) {
 	return s;
 }
 
+/*
+ *  pad str to n chars with c chars to the left
+*/
 function pad_left(s, c, n) {
 	s_ = s;
 
@@ -39,6 +44,9 @@ function pad_left(s, c, n) {
 	return s_;
 }
 
+/*
+ *  convert ASCII str to uint8array (unicode be damned)
+ */
 function str_to_uint8_buf(s) {
 	buf = new Uint8Array(s.length);
 

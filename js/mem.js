@@ -139,6 +139,9 @@ function get_our_slide() {
 	}
 }
 
+/*
+ *  write str to addy
+ */
 function write_str(addy, s) {
 	for (cur_addy = addy; cur_addy < (addy + s.length); cur_addy++) {
 		write_u8(cur_addy, s.charCodeAt(cur_addy - addy));
@@ -147,6 +150,10 @@ function write_str(addy, s) {
 	return s;
 }
 
+/*
+ *  sptr is meant to give you a pointer to a specified string
+ *  remember your nul's!
+ */
 function sptr(s) {
 	write_str(global_sptr_addy, s);
 	global_sptr_addy += s.length;

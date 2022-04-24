@@ -27,6 +27,7 @@ function printf() {
 	return calls4arg.apply(this, args_to_pass);
 }
 
+/*
 function syslog() {
 	if (arguments.length > 4) {
 		return printf("warning: tried to printf with %d args, max %d.\n", arguments.length, 4);
@@ -61,3 +62,31 @@ function syslog() {
 function sleep(t) {
 	return calls4arg("sleep", t, 0, 0, 0);
 }
+ */
+
+function scall_wrapper() {
+	function _scall_wrapper() {
+		var args_to_pass = new Array();
+		args_to_pass.push(arguments.callee.func_name);
+
+		if (arguments.callee.hasOwnProperty("pre_args")) {
+			args_to_pass = args_to_pass.concat(arguments.callee.pre_args);
+		}
+
+		args_to_pass = args_to_pass.concat(Array.from(arguments));
+
+		if (arguments.callee.hasOwnProperty("post_args")) {
+			args_to_pass = args_to_pass.concat(arguments.callee.post_args);
+		}
+
+		return scall.apply(this, args_to_pass);
+	}
+
+	return _scall_wrapper;
+}
+  
+var syslog = scall_wrapper();
+syslog.func_name = "syslog";
+
+var sleep = scall_wrapper();
+sleep.func_name = "sleep";

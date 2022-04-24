@@ -37,7 +37,7 @@ function main() {
 
 	init_sptr_heap();
 
-	var i = 0;
+//	var i = 0;
 
 	puts("we out here");
 	puts("I came through a portal holding a 40 and a blunt. Do you really wanna test me right now?");
@@ -53,12 +53,12 @@ function main() {
 	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
 	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
 
-//	var i = 0;
-//	while (true) {
-//		calls4arg("sysputs", 0x28, sptr("get rekt from jsc %d (slide=%x)\n"), i, slide);
-//		calls4arg("sleep", 1, 0, 0, 0);
-//		i++;
-//	}
+	var i = 0;
+	while (true) {
+		calls4arg("syslog", 0x28, sptr("get rekt from jsc %d (slide=%x)\n"), i, slide);
+		calls4arg("sleep", 1, 0, 0, 0);
+		i++;
+	}
 
 	printf("still alive\n");
 };

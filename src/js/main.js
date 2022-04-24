@@ -48,8 +48,8 @@ function main() {
 
 	var i = 0;
 	while (true) {
-		syslog(LOG_SYSLOG, "get rekt from jsc %d (slide=%x)\n", i, slide);
-		sleep(1);
+		scall("printf", "get rekt from jsc %d (slide=%x)\n", i, slide);
+		sleep(0);
 		i++;
 	}
 

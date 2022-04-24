@@ -199,7 +199,7 @@ function callnarg() {
 	 *  probably un-necessary now, keeping in just in case for now
 	 */
 	calls4arg("thread_resume", read_u32(th), 0, 0, 0);
-	calls4arg("usleep", 10000, 0, 0, 0);
+	calls4arg("usleep", 1000, 0, 0, 0);
 
 	/*
 	 *  spin wait for return
@@ -220,7 +220,7 @@ function callnarg() {
 			return read_u32(thread_state);
 		}
 
-		calls4arg("usleep", 10000, 0, 0, 0);
+		calls4arg("usleep", 1000, 0, 0, 0);
 	}
 }
 

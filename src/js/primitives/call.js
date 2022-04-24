@@ -219,6 +219,41 @@ function callnarg() {
 	}
 }
 
-function callsnarg() {
+/*
+ *  call with symbol
+ */
+function scall() {
+	/*
+	 *  this calls dlsym with the first arg, then uses the address it returns
+	 *  to call. so you can call with a symbol name instead of an address
+	 */
 
+	if (arguments.length < 1) {
+		return printf("warning: scall called without args. arguments.length=%d\n", arguments.length);
+	}
+
+	var sym = arguments[0];
+
+	if (sym in sym_cache) {
+		var addy = sym_cache[sym];
+	} else {
+		var dlsym_addy = read_u32(reserve_addr + 24 + slid);
+		var shc_slide = read_u32(reserve_addr + 20 + slid);
+		var addy = call4arg(dlsym_addy + shc_slide, 0xfffffffe, sptr(sym), 0, 0);
+		sym_cache[sym] = addy;
+	}
+
+	var args_to_pass = new Array();
+
+	args_to_pass.push(addy);
+
+	for (var i = 1; i < arguments.length; i++) {
+		if (arguments[i].constructor === String) {
+			args_to_pass.push(sptr(arguments[i]));
+		} else {
+			args_to_pass.push(arguments[i]);
+		}
+	}
+
+	return callnarg.apply(this, args_to_pass);
 }

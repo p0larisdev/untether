@@ -37,8 +37,6 @@ function main() {
 
 	init_sptr_heap();
 
-//	var i = 0;
-
 	puts("we out here");
 	puts("I came through a portal holding a 40 and a blunt. Do you really wanna test me right now?");
 
@@ -47,11 +45,11 @@ function main() {
 	printf("*(uint16_t*)base = 0x%x\n", read_u16(base));
 	printf("*(uint32_t*)base = 0x%x\n", read_u32(base));
 
-	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
-	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
-	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
-	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
-	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
+	scall("printf", "Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n", 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
+	scall("printf", "Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n", 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
+	scall("printf", "Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n", 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
+	scall("printf", "Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n", 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
+	scall("printf", "Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n", 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
 
 	var i = 0;
 	while (true) {

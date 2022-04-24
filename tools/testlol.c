@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
 	printf("var kport_ip_receiver%x = 0x%x;\n", 4, offsetof(kport_t, ip_receiver));
 	printf("var kport_ip_srights%x = 0x%x;\n", 4, offsetof(kport_t, ip_srights));
 	printf("var MIG_MAX = 0x%x\n", 0x1000);
-	printf("var NDR_record = 0x%x\n", &NDR_record);
+	printf("var NDR_record = %x %x %x %x\n", NDR_record);
 
 	return 0;
 }

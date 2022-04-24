@@ -156,4 +156,13 @@ function callnarg() {
 
 	calls4arg("thread_set_state", read_u32(th), ARM_THREAD_STATE, thread_state, ARM_THREAD_STATE_COUNT);
 	calls4arg("thread_resume", read_u32(th), 0, 0, 0);
+
+	while (true) {
+		write_u32(count, 0x1000);
+		calls4arg("thread_get_state", read_u32(th), ARM_THREAD_STATE, thread_state, count);
+		if ((read_u32(thread_state + (15 << 2)) - (0x23d751fc + dyld_shc_slide)) <= 8) {
+			return read_u32(thread_state);
+		}
+		calls4arg("usleep", 1000, 0, 0, 0);
+	}
 }

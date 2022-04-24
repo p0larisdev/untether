@@ -48,6 +48,10 @@ function main() {
 	printf("*(uint32_t*)base = 0x%x\n", read_u32(base));
 
 	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
+	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
+	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
+	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
+	callnarg(sym_cache["printf"], sptr("Hello world! %x %x %x %x %x %x %x %x %x %x %x %x %x\n"), 0x420, 0x69, 0x1337, 0x13371337, 0xb1a7e17, 0x41424344);
 
 //	var i = 0;
 //	while (true) {
@@ -56,5 +60,5 @@ function main() {
 //		i++;
 //	}
 
-	printf("still alive18\n");
+	printf("still alive\n");
 };

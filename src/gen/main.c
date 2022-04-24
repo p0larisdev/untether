@@ -173,8 +173,9 @@ int main(int   argc,
 	sz = ftell(js);
 	rewind(js);
 
-	js_src = (char*)malloc(sz);
+	js_src = (char*)malloc(sz + 1);
 	fread(js_src, 1, sz, js);
+	js_src[sz] = '\0';
 
 	fseek(bin, 0L, SEEK_END);
 	sz = ftell(bin);

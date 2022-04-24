@@ -112,3 +112,4 @@ var io_service_open_extended = scall_wrapper("io_service_open_extended");
 var IORegistryEntryGetChildIterator = scall_wrapper("IORegistryEntryGetChildIterator");
 var IOIteratorNext = scall_wrapper("IOIteratorNext");
 var IORegistryEntryGetProperty = scall_wrapper("IORegistryEntryGetProperty");
+var mach_msg = scall_wrapper("mach_msg");

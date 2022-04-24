@@ -22,6 +22,10 @@ try {
 	puts = function (){};
 }
 
+function csbypass() {
+
+}
+
 function main() {
 	/*
 	 *  get slide and calculate slid base
@@ -40,6 +44,8 @@ function main() {
 
 	puts("we out here");
 	puts("I came through a portal holding a 40 and a blunt. Do you really wanna test me right now?");
+
+//	csbypass();
 
 	printf("slide=0x%x\n", slide);
 	printf("*(uint8_t*)base = 0x%x\n", read_u8(base));

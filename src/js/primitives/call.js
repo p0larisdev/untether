@@ -167,6 +167,11 @@ function callnarg() {
 	}
 
 	/*
+	 *  r9
+	 */
+	write_u32(thread_state + (11 << 2), 0x1337);
+
+	/*
 	 *  stack
 	 */
 	write_u32(thread_state + (13 << 2), stack_shit);
@@ -199,7 +204,6 @@ function callnarg() {
 	 *  probably un-necessary now, keeping in just in case for now
 	 */
 	calls4arg("thread_resume", read_u32(th), 0, 0, 0);
-	calls4arg("usleep", 1000, 0, 0, 0);
 
 	/*
 	 *  spin wait for return
@@ -208,19 +212,19 @@ function callnarg() {
 		/*
 		 *  reset, it's used as input for thread_state size
 		 */
-		write_u32(count, 0x1000);
+		write_u32(count, 0x100);
 		calls4arg("thread_get_state", read_u32(th), ARM_THREAD_STATE, thread_state, count);
 
 		/*
 		 *  if the pc is in (resolver, resolver + 8), suspend the thread
 		 *  (to not spin endlessly), read r0 and return
 		 */
-		if ((read_u32(thread_state + (15 << 2)) - (__stack_chk_fail_resolver + dyld_shc_slide)) <= 8) {
+		if (((read_u32(thread_state + (15 << 2)) - (__stack_chk_fail_resolver + dyld_shc_slide)) <= 8) && (read_u32(thread_state + (11 << 2)) == 0x1337)) {
 			calls4arg("thread_suspend", read_u32(th), 0, 0, 0);
 			return read_u32(thread_state);
 		}
 
-		calls4arg("usleep", 1000, 0, 0, 0);
+//		calls4arg("usleep", 1000, 0, 0, 0);
 	}
 }
 
@@ -249,6 +253,7 @@ function scall() {
 	}
 
 	var args_to_pass = new Array();
+	var force_callnarg = false;
 
 	args_to_pass.push(addy);
 
@@ -257,10 +262,21 @@ function scall() {
 			args_to_pass.push(sptr(arguments[i]));
 		} else {
 			args_to_pass.push(arguments[i]);
+			if ((arguments[i] & 0xffff0000 == 0xffff0000 || arguments[i] & 0xffff0000 == 0xfffe0000)) {
+				force_callnarg = true;
+			}
 		}
 	}
 
 //	printf("%s\n", args_to_pass.toString());
 
-	return callnarg.apply(this, args_to_pass);
+	if (args_to_pass.length > 5 || force_callnarg) {
+		return callnarg.apply(this, args_to_pass);
+	} else {
+		var count_to_me = 5 - arguments.length;
+		for (var i = 0; i < count_to_me; i++) {
+			args_to_pass.push(0);
+		}
+		return call4arg.apply(this, args_to_pass)
+	}
 }

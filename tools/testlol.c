@@ -50,6 +50,7 @@ int main(int argc, char* argv[]) {
 	printf("var MACH_MSG_TYPE_MAKE_SEND = 0x%x;\n", MACH_MSG_TYPE_MAKE_SEND);
 	printf("var MACH_PORT_LIMITS_INFO = 0x%x;\n", MACH_PORT_LIMITS_INFO);
 	printf("var MACH_PORT_LIMITS_INFO_COUNT = 0x%x;\n", MACH_PORT_LIMITS_INFO_COUNT);
+	printf("var MACH_MSG_OOL_PORTS_DESCRIPTOR = 0x%x;\n", MACH_MSG_OOL_PORTS_DESCRIPTOR);
 	printf("var kport_size = 0x%x;\n", sizeof(kport_t));
 	kport_t kport[2] = {};
     uintptr_t *ptr = (uintptr_t*)(kport + 1);
@@ -59,6 +60,31 @@ int main(int argc, char* argv[]) {
     kport->ip_messages.port.qlimit = 777;
     kport->ip_receiver = 0x12345678; // dummy
     kport->ip_srights = 99;
+	typedef struct {
+        mach_msg_header_t Head;
+        mach_msg_body_t msgh_body;
+        mach_msg_ool_ports_descriptor_t init_port_set[0];
+    } Request;
+
+	printf("%x\n", sizeof(Request));
+	printf("%x\n", sizeof(mach_msg_ool_ports_descriptor_t));
+	printf("var req_init_port_set = 0x%x\n", offsetof(Request, init_port_set));
+	printf("var req_init_port_set_address = 0x%x\n",  offsetof(mach_msg_ool_ports_descriptor_t, address));
+	printf("var req_init_port_set_count = 0x%x\n",  offsetof(mach_msg_ool_ports_descriptor_t, count));
+//	printf("var req_init_port_set_disposition = 0x%x\n",  offsetof(Request, init_port_set) + offsetof(mach_msg_ool_ports_descriptor_t, disposition));
+//	printf("var req_init_port_set_deallocate = 0x%x\n",  offsetof(Request, init_port_set) + offsetof(mach_msg_ool_ports_descriptor_t, deallocate));
+//	printf("var req_init_port_set_type = 0x%x\n", offsetof(Request, init_port_set) +  offsetof(mach_msg_ool_ports_descriptor_t, type));
+	printf("var req_head_msgh_bits = 0x%x\n", offsetof(Request, Head.msgh_bits));
+	printf("var req_head_msgh_request_port = 0x%x\n", offsetof(Request, Head.msgh_remote_port));
+	printf("var req_head_msgh_reply_port = 0x%x\n", offsetof(Request, Head.msgh_local_port));
+	printf("var req_head_msgh_id = 0x%x\n", offsetof(Request, Head.msgh_id));
+	printf("var req_msgh_body_msgh_descriptor_count = 0x%x\n", offsetof(Request, msgh_body.msgh_descriptor_count));
+
+	printf("%x\n", sizeof(mach_msg_header_t));
+
+	printf("%x\n", MACH_MSGH_BITS_COMPLEX | MACH_MSGH_BITS(19, MACH_MSG_TYPE_MAKE_SEND_ONCE));
+	printf("%x\n", MACH_SEND_MSG|MACH_MSG_OPTION_NONE);
+	printf("%x\n", MACH_MSG_TIMEOUT_NONE);
 
 	printf("var kport_ip_bits%x = 0x%x;\n", 4, offsetof(kport_t, ip_bits));
 	printf("var kport_ip_references%x = 0x%x;\n", 4, offsetof(kport_t, ip_references));

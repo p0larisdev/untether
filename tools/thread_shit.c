@@ -17,6 +17,9 @@ int main(int argc, char* argv[]) {
 	kern_return_t kr;
 	thread_t th;
 	mach_port_name_t mytask, mythread;
+	arm_thread_state_t state;
+	mach_msg_type_number_t count;
+
 	printf("Hello, world!\n");
 	mytask = mach_task_self();
 	mythread = mach_thread_self();
@@ -30,31 +33,20 @@ int main(int argc, char* argv[]) {
 	pthread_create(&thread, NULL, lol2, NULL);
 
 	puts("test");
+	printf("%x %x\n", &thread, thread);
 
-//	thread_create(mytask, &th);
 	th = pthread_mach_thread_np(thread);
-	printf("%x\n", mytask);
-	arm_thread_state_t state;
-	mach_msg_type_number_t count;
 	kr = thread_get_state(mythread, ARM_THREAD_STATE, (thread_state_t)&state, &count);
+
+	printf("%x\n", THREAD_BASIC_INFO);
+
+	printf("%x\n", th);
 
 	uint32_t* stack_above = 0x2001000;
 	stack_above[0] = 0x42069;
 	stack_above[1] = 0x69420;
 	stack_above[3] = 0x13371337;
 	stack_above[4] = 0x6969;
-
-//	fprintf(stderr, "%p %p\n", test, dlsym(RTLD_DEFAULT, "puts"));
-
-//	exit(42);
-
-//	*(uint32_t*)0x41414141 = 0;
-
-//	memset(&state, 0, ARM_THREAD_STATE_COUNT * sizeof(uint32_t));
-
-	for (int i = 0; i < 13; i++) {
-		fprintf(stderr, "r%d=%x\n", i, state.__r[i]);
-	}
 
 	*(uint32_t*)(0x346afc48 + 0x1b4c000) = 0x23d751fc + 0x1b4c000;
 
@@ -68,7 +60,6 @@ int main(int argc, char* argv[]) {
 	state.__cpsr = 0x40000020;
 	kr = thread_set_state(th, ARM_THREAD_STATE, (thread_state_t)&state, ARM_THREAD_STATE_COUNT);
 	kr = thread_resume(th);
-//	thread_call_enter((thread_call_func_t)&lol);
 
 	sleep(1);
 

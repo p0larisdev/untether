@@ -206,7 +206,8 @@ int main(int   argc,
 
 	fprintf(stderr, "0x%x\n", RTLD_DEFAULT);
 
-	uint32_t	stack_base					= 0x1c7738; // my shell setup
+	uint32_t	stack_base					= 0x1c7728; // my shell setup
+//	uint32_t	stack_base					= 0x1c772c; // my shell setup
 //	uint32_t	stack_base					= 0x1c7c88; // my 4s shell setup
 //	uint32_t	stack_base					= 0x1c2e48; // my lldb
 //	uint32_t	stack_base					= 0x1c7d68; // btserver env

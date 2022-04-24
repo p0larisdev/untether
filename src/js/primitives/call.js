@@ -260,5 +260,7 @@ function scall() {
 		}
 	}
 
+//	printf("%s\n", args_to_pass.toString());
+
 	return callnarg.apply(this, args_to_pass);
 }

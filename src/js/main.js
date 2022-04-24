@@ -46,6 +46,12 @@ function main() {
 	printf("*(uint16_t*)base = 0x%x\n", read_u16(base));
 	printf("*(uint32_t*)base = 0x%x\n", read_u32(base));
 
+	var tfp0 = get_kernel_task();
+
+	printf("tfp0=%x\n", tfp0);
+
+	return 0;
+
 	var i = 0;
 	while (true) {
 //		scall("printf", "get rekt from jsc %d (slide=%x)\n", i, slide);

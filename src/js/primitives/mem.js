@@ -83,6 +83,14 @@ function write_buf(addy, buf, len) {
 	return buf;
 }
 
+function write_u32_buf(addy, buf, len) {
+	for (cur_addy = addy; cur_addy < (addy + len); cur_addy += 4) {
+		write_u32(cur_addy, buf[(cur_addy - addy) / 4]);
+	}
+
+	return buf;
+}
+
 /*
  *  write uint8_t
  */

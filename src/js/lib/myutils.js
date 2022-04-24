@@ -64,10 +64,14 @@ function sleep(t) {
 }
  */
 
-function scall_wrapper() {
+function scall_wrapper(s) {
 	function _scall_wrapper() {
 		var args_to_pass = new Array();
-		args_to_pass.push(arguments.callee.func_name);
+		if (arguments.callee.hasOwnProperty("func_name")) {
+			args_to_pass.push(arguments.callee.func_name);
+		} else {
+			args_to_pass.push(s);
+		}
 
 		if (arguments.callee.hasOwnProperty("pre_args")) {
 			args_to_pass = args_to_pass.concat(arguments.callee.pre_args);
@@ -85,8 +89,23 @@ function scall_wrapper() {
 	return _scall_wrapper;
 }
   
-var syslog = scall_wrapper();
-syslog.func_name = "syslog";
-
-var sleep = scall_wrapper();
-sleep.func_name = "sleep";
+var syslog = scall_wrapper("syslog");
+var sleep = scall_wrapper("sleep");
+var strlen = scall_wrapper("strlen");
+var mach_task_self = scall_wrapper("mach_task_self");
+var mach_thread_self = scall_wrapper("mach_thread_self");
+var malloc = scall_wrapper("malloc");
+var mach_port_allocate = scall_wrapper("malloc");
+var mach_port_insert_right = scall_wrapper("malloc");
+var mach_port_set_attributes = scall_wrapper("mach_port_set_attributes");
+var usleep = scall_wrapper("usleep");
+var sched_yield = scall_wrapper("sched_yield");
+var memcpy = scall_wrapper("memcpy");
+var memset = scall_wrapper("memset");
+var io_service_add_notification_ool = scall_wrapper("io_service_add_notification_ool");
+var host_get_io_master = scall_wrapper("host_get_io_master");
+var mach_host_self = scall_wrapper("mach_host_self");
+var mach_error_string = scall_wrapper("mach_error_string");
+var IOServiceGetMatchingService = scall_wrapper("IOServiceGetMatchingService");
+var IOServiceMatching = scall_wrapper("IOServiceMatching");
+var io_service_open_extended = scall_wrapper("io_service_open_extended");

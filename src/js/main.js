@@ -12,6 +12,13 @@ var ARM_THREAD_STATE_COUNT = 0x11;
 var ARM_THREAD_STATE = 0x1;
 var LOG_SYSLOG = 0x28;
 
+var PROT_READ = 0x1;
+var PROT_WRITE = 0x2;
+var PROT_EXEC = 0x4;
+
+var MAP_PRIVATE = 0x2;
+var MAP_ANON = 0x1000;
+
 try {
 	puts("we out here in jsc");
 } catch (e) {
@@ -20,10 +27,6 @@ try {
 	 */
 
 	puts = function (){};
-}
-
-function csbypass() {
-
 }
 
 function main() {
@@ -44,8 +47,6 @@ function main() {
 
 	puts("we out here");
 	puts("I came through a portal holding a 40 and a blunt. Do you really wanna test me right now?");
-
-//	csbypass();
 
 	printf("slide=0x%x\n", slide);
 	printf("*(uint8_t*)base = 0x%x\n", read_u8(base));

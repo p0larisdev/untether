@@ -113,3 +113,7 @@ var IORegistryEntryGetChildIterator = scall_wrapper("IORegistryEntryGetChildIter
 var IOIteratorNext = scall_wrapper("IOIteratorNext");
 var IORegistryEntryGetProperty = scall_wrapper("IORegistryEntryGetProperty");
 var mach_msg = scall_wrapper("mach_msg");
+var mmap = scall_wrapper("mmap");
+var free = scall_wrapper("free");
+var mlock = scall_wrapper("mlock");
+var mprotect = scall_wrapper("mprotect");

@@ -91,6 +91,21 @@ function write_u32_buf(addy, buf, len) {
 	return buf;
 }
 
+function fast_write_buf(addy, buf) {
+	var upper_i = Math.floor(buf.length / 0x100);
+
+	for (var i = 0; i < upper_i; i++) {
+		u8x4 = u32_to_u8x4(addy + (i * 0x100));
+		parent[VECTOR_OFFSET + 0x0] = u8x4[0];
+		parent[VECTOR_OFFSET + 0x1] = u8x4[1];
+		parent[VECTOR_OFFSET + 0x2] = u8x4[2];
+		parent[VECTOR_OFFSET + 0x3] = u8x4[3];
+		for (var j = (i * 0x100); (j < (i * 0x100) + 0x100) && (j < buf.length); j++) {
+			child[j % 0x100] = buf[j];
+		}
+	}
+}
+
 /*
  *  write uint8_t
  */

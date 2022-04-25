@@ -1,4 +1,5 @@
 #include <mach/mach.h>
+#include <sys/mman.h>
 #include <stddef.h>
 #include <stdio.h>
 //#include <IOKit/IOKitLib.h>
@@ -71,6 +72,7 @@ int main(int argc, char* argv[]) {
 	printf("var req_init_port_set = 0x%x\n", offsetof(Request, init_port_set));
 	printf("var req_init_port_set_address = 0x%x\n",  offsetof(mach_msg_ool_ports_descriptor_t, address));
 	printf("var req_init_port_set_count = 0x%x\n",  offsetof(mach_msg_ool_ports_descriptor_t, count));
+	printf("%x %x %x %x %x\n", PROT_READ, PROT_WRITE, PROT_EXEC, MAP_PRIVATE, MAP_ANON);
 //	printf("var req_init_port_set_disposition = 0x%x\n",  offsetof(Request, init_port_set) + offsetof(mach_msg_ool_ports_descriptor_t, disposition));
 //	printf("var req_init_port_set_deallocate = 0x%x\n",  offsetof(Request, init_port_set) + offsetof(mach_msg_ool_ports_descriptor_t, deallocate));
 //	printf("var req_init_port_set_type = 0x%x\n", offsetof(Request, init_port_set) +  offsetof(mach_msg_ool_ports_descriptor_t, type));

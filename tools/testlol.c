@@ -97,5 +97,13 @@ int main(int argc, char* argv[]) {
 	printf("var MIG_MAX = 0x%x\n", 0x1000);
 	printf("var NDR_record = %x %x %x %x\n", NDR_record);
 
+    int number_port_descs = 1;
+
+    char buf[sizeof(Request) + number_port_descs*sizeof(mach_msg_ool_ports_descriptor_t)];
+    Request *InP = (Request*)buf;
+
+    printf("%p %p %x %x\n", buf, &InP->Head, sizeof(Request), sizeof(mach_msg_ool_ports_descriptor_t)); 
+    printf("%x %x %x %x %x %x %x %x %x\n", &InP->Head, MACH_SEND_MSG|MACH_MSG_OPTION_NONE, (mach_msg_size_t)sizeof(Request)+number_port_descs*sizeof(mach_msg_ool_ports_descriptor_t), 0, 0, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL, 0x41414141);   
+
 	return 0;
 }

@@ -92,7 +92,7 @@ function write_u32_buf(addy, buf, len) {
 }
 
 function fast_write_buf(addy, buf) {
-	var upper_i = Math.floor(buf.length / 0x100);
+	var upper_i = Math.ceil(buf.length / 0x100);
 
 	for (var i = 0; i < upper_i; i++) {
 		u8x4 = u32_to_u8x4(addy + (i * 0x100));

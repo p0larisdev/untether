@@ -19,6 +19,9 @@ var PROT_EXEC = 0x4;
 var MAP_PRIVATE = 0x2;
 var MAP_ANON = 0x1000;
 
+/*
+ *  leftover shit from jsc_fun, used to be using `log`
+ */
 try {
 	puts("we out here in jsc");
 } catch (e) {
@@ -57,7 +60,7 @@ function main() {
 
 	printf("tfp0=%x\n", tfp0);
 
-	return 0;
+	return;
 
 	var i = 0;
 	while (true) {

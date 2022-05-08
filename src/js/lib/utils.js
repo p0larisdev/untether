@@ -30,6 +30,7 @@ function unhexlify(hexstr) {
 	return bytes;
 }
 
+/*
 function hexdump(data) {
 	if (typeof data.BYTES_PER_ELEMENT !== 'undefined')
 		data = Array.from(data);
@@ -44,7 +45,7 @@ function hexdump(data) {
 	}
 
 	return lines.join('\n');
-}
+}*/
 
 // Simplified version of the similarly named python module.
 var Struct = (function() {

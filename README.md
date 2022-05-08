@@ -1,7 +1,7 @@
 # p0laris untether
 this is a work-in-progress.
 
-gets ROP in racoon, then gets JS code exec with RWC primitives (arbitrary r/w, currently up to 4-arg call primitive)
+gets ROP in racoon, then gets JS code exec with RWC primitives (arbitrary r/w, currently up to 26-arg call primitive)
 
 current offsets are included for `iPhone4,1` on `9.3.6 (13G37)`. it may work on other devices and/or firmwares, but that's unlikely. (besides maybe `9.3.5 (13G36)` on `iPhone4,1`?)
 

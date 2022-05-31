@@ -11,5 +11,7 @@
 	<true/> 
 	<key>get-task-allow</key> 
 	<true/>
+	<key>run-unsigned-code</key>
+	<true/>
 </dict>
 </plist>

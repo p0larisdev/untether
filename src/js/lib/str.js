@@ -2,7 +2,7 @@
  *  currently unused (iirc) garbage
  *  basically just prints an address than the uint32_t there, and then +4, etc
  */
-function prim_dump_u32(buf) {
+function prim_dump_u32(buf, base) {
 	s = "";
 
 	for (var i = 0; i < buf.length; i += 4) {
@@ -13,10 +13,10 @@ function prim_dump_u32(buf) {
 		tmp.push(buf[i + 2]);
 		tmp.push(buf[i + 3]);
 
-		s += "0x" + pad_left((0x422200 + i).toString(16), "0", 8);
+		s += "0x" + pad_left((base + i).toString(16), "0", 8);
 		s += ": ";
 		s += "0x" + pad_left(u8x4_to_u32(tmp).toString(16), "0", 8);
-		if (u8x4_to_u32(tmp) >= 0x1800000 && u8x4_to_u32(tmp) < 0x1900000) {
+/*		if (u8x4_to_u32(tmp) >= 0x1800000 && u8x4_to_u32(tmp) < 0x1900000) {
 			s += " -> 0x" + pad_left(read_u32(u8x4_to_u32(tmp)).toString(16), "0", 8);
 			s += "\n";
 			val = read_u32(u8x4_to_u32(tmp));
@@ -24,7 +24,7 @@ function prim_dump_u32(buf) {
 				buf = read_buf(val, 0x100);
 				s += (hexdump(buf, 8, 2, val, 8, "0x"));
 			}
-		}
+		}*/
 		s += "\n";
 	}
 

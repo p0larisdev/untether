@@ -1,0 +1,3 @@
+movw r0, #0x4142
+movt r0, #0x4344
+bx lr

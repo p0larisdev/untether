@@ -1,6 +1,0 @@
-{
-    "name": "Launch",
-    "type": "lldb",
-    "request": "launch",
-    "program": "${workspaceFolder}/tools/bin/thread_shit"
-}

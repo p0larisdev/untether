@@ -1,7 +1,25 @@
-var __stack_chk_fail_lazy_addy = 0x346afc48;
-var __stack_chk_fail_resolver = 0x23d751fc;
-var gettimeofday_lazy_addy = 0x34d63d3c;
-var atan2_lazy_addy = 0x346afc84;
+var N94AP_13G37 = 0x0;
+var N78AP_13G36 = 0x1;
+
+var build_for = N78AP_13G36;
+
+if (build_for == N94AP_13G37) {
+	var __stack_chk_fail_lazy_addy = 0x346afc48;
+	var __stack_chk_fail_resolver = 0x23d751fc;
+	var gettimeofday_lazy_addy = 0x34d63d3c;
+	var atan2_lazy_addy = 0x346afc84;
+	var pthread_exit = 0x20633048 | 1;
+	var pthread_join = 0x20636af4 | 1;
+	var add_sp_0x3c = 0x23d72b5a | 1;
+} else if (build_for == N78AP_13G36) {
+	var __stack_chk_fail_lazy_addy = 0x347f7c48;
+	var __stack_chk_fail_resolver = 0x23d751fc;
+	var gettimeofday_lazy_addy = 0x347f7d3c;
+	var atan2_lazy_addy = 0x347f7c84;
+	var pthread_exit = 0x20633048 | 1;
+	var pthread_join = 0x20636af4 | 1;
+	var add_sp_0x3c = 0x23d72b5a | 1;
+}
 var reserve_addr = 0x1a0000;
 var sym_cache = {};
 var slide = 0x0;
@@ -24,9 +42,6 @@ var countptrptr = 0x132000;
 var thptrptr = 0x132004;
 var thread_stateptrptr = 0x132008;
 
-var pthread_exit = 0x20633048 | 1;
-var pthread_join = 0x20636af4 | 1;
-var add_sp_0x3c = 0x23d72b5a | 1;
 var mov_r1_r0 = 0x72f76 | 1;
 var mov_r0 = 0xee40 | 1;
 var str_r0_r4 = 0x85474 | 1;

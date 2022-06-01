@@ -21,6 +21,7 @@ var MAP_ANON = 0x1000;
 
 var victim = {a: 13.37};
 
+if (0) {
 /*
  *  leftover shit from jsc_fun, used to be using `log`
  */
@@ -32,6 +33,7 @@ try {
 	 */
 
 	puts = function (){};
+}
 }
 
 var JSStringCreateWithUTF8CString = 0x239f9d0d;
@@ -54,7 +56,7 @@ function main() {
 
 	init_sptr_heap();
 
-	scall("printf", "%x %x %x %x", 0x41, 0x42, 0x43, 0x44);
+	scall("printf", "%x %x %x %x\n", 0x41, 0x42, 0x43, 0x44);
 
 	puts("we out here");
 	puts("I came through a portal holding a 40 and a blunt. Do you really wanna test me right now?");

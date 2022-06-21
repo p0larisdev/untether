@@ -107,7 +107,19 @@ kern_return_t send_ports(mach_port_t target, mach_port_t payload, size_t num, ma
     return ret;
 }
 
+struct test {
+    int a;
+    int b;
+    char* c;
+};
+
 int main(int argc, char* argv[]) {
+    struct test d;
+    d.a = 1;
+    d.b = 2;
+    d.c = "Hello, world!\n";
+    printf("%x %x %x %x %x %x %x %x\n", d, 0x41414141, 0x41424344);
+    return;
 	printf("var MACH_PORT_RIGHT_RECEIVE = 0x%x;\n", MACH_PORT_RIGHT_RECEIVE);
 	printf("var MACH_MSG_TYPE_MAKE_SEND = 0x%x;\n", MACH_MSG_TYPE_MAKE_SEND);
 	printf("var MACH_PORT_LIMITS_INFO = 0x%x;\n", MACH_PORT_LIMITS_INFO);

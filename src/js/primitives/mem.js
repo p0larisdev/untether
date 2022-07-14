@@ -257,6 +257,37 @@ function _sptr(s) {
 	return global_sptr_addy - s.length;
 }
 
+
+/*
+ *  _sptr is meant to give you a pointer to a specified string
+ *  remember your nul's!
+ */
+function shit_heap(v) {
+	if ((sptr_len + v) >= sptr_size) {
+		/*
+		 *  expand sptr heap if it's too small
+		 *  this will technically fail if the string is over 1MB, and will then
+		 *  cause a heap overflow, but eh whatever
+		 * 
+		 *  sometimes it's fun to include esoteric bugs that are unlikely to
+		 *  cause real harm, to add an exploitation challenge. :P
+		 */
+		var dlsym_addy = read_u32(reserve_addr + 24 + slid);
+		var shc_slide = read_u32(reserve_addr + 20 + slid);
+		write_str(0x150000, "realloc\0");
+		sptr_size += 0x100000;
+		var addy = call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x150000, 0, 0);
+		global_sptr_addy = call4arg(addy, global_sptr_addy, sptr_size, 0, 0);
+	}
+//	write_str(global_sptr_addy, s);
+	global_sptr_addy += v;
+	return global_sptr_addy - v;
+}
+
+function shit_heap_free(v) {
+	return;
+}
+
 /*
  *  sptr but with nul
  */

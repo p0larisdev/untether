@@ -310,7 +310,7 @@ function callnarg() {
 	/*
 	 *  r9
 	 */
-	write_u32(thread_state + (11 << 2), 0x1337);
+//	write_u32(thread_state + (11 << 2), 0x1337);
 
 	/*
 	 *  stack
@@ -356,7 +356,7 @@ function callnarg() {
 		 *  if the pc is in (resolver, resolver + 8), suspend the thread
 		 *  (to not spin endlessly), read r0 and return
 		 */
-		if (((read_u32(thread_state + (15 << 2)) == (__stack_chk_fail_resolver + dyld_shc_slide)))) {
+		if (((read_u32(thread_state + (15 << 2)) >= (__stack_chk_fail_resolver + dyld_shc_slide))) && ((read_u32(thread_state + (15 << 2)) < (__stack_chk_fail_resolver + dyld_shc_slide + 8)))) {
 			calls4arg("thread_suspend", rth, 0, 0, 0);
 			return read_u32(thread_state);
 		}
@@ -416,7 +416,7 @@ function scall() {
 		for (var i = 0; i < count_to_me; i++) {
 			args_to_pass.push(0);
 		}
-		return call4arg.apply(this, args_to_pass)
+		return call4arg.apply(this, args_to_pass);
 	}
 }
 

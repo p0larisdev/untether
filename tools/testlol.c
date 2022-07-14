@@ -114,6 +114,7 @@ struct test {
 };
 
 int main(int argc, char* argv[]) {
+#if 0
     struct test d;
     d.a = 1;
     d.b = 2;
@@ -150,8 +151,8 @@ int main(int argc, char* argv[]) {
 //	printf("var req_init_port_set_deallocate = 0x%x\n",  offsetof(Request, init_port_set) + offsetof(mach_msg_ool_ports_descriptor_t, deallocate));
 //	printf("var req_init_port_set_type = 0x%x\n", offsetof(Request, init_port_set) +  offsetof(mach_msg_ool_ports_descriptor_t, type));
 	printf("var req_head_msgh_bits = 0x%x\n", offsetof(Request, Head.msgh_bits));
-	printf("var req_head_msgh_request_port = 0x%x\n", offsetof(Request, Head.msgh_remote_port));
-	printf("var req_head_msgh_reply_port = 0x%x\n", offsetof(Request, Head.msgh_local_port));
+	printf("var req_head_msgh_remote_port = 0x%x\n", offsetof(Request, Head.msgh_remote_port));
+	printf("var req_head_msgh_local_port = 0x%x\n", offsetof(Request, Head.msgh_local_port));
 	printf("var req_head_msgh_id = 0x%x\n", offsetof(Request, Head.msgh_id));
 	printf("var req_msgh_body_msgh_descriptor_count = 0x%x\n", offsetof(Request, msgh_body.msgh_descriptor_count));
 
@@ -173,6 +174,71 @@ int main(int argc, char* argv[]) {
 //    spray_ports(2);
 
     printf("%x\n", MACH_RCV_MSG);
+#endif
+
+    #pragma pack(4)
+    typedef struct {
+        mach_msg_header_t Head;
+        mach_msg_body_t msgh_body;
+        mach_msg_ool_ports_descriptor_t init_port_set;
+        NDR_record_t NDR;
+        mach_msg_type_number_t init_port_setCnt;
+    } Request;
+    typedef struct {
+        mach_msg_header_t Head;
+        NDR_record_t NDR;
+        kern_return_t RetCode;
+        mach_msg_trailer_t trailer;
+    } Reply;
+#pragma pack()
+
+    union {
+        Request In;
+        Reply Out;
+    } Mess;
+    Request *InP = &Mess.In;
+    Reply *OutP = &Mess.Out;
+
+#if 0
+    InP->msgh_body.msgh_descriptor_count = 1;
+    InP->init_port_set.address = (void*)(init_port_set);
+    InP->init_port_set.count = real_count;
+    InP->init_port_set.disposition = 19;
+    InP->init_port_set.deallocate =  FALSE;
+    InP->init_port_set.type = MACH_MSG_OOL_PORTS_DESCRIPTOR;
+    InP->NDR = NDR_record;
+    InP->init_port_setCnt = fake_count; // was real_count
+    InP->Head.msgh_bits = MACH_MSGH_BITS_COMPLEX | MACH_MSGH_BITS(19, MACH_MSG_TYPE_MAKE_SEND_ONCE);
+    InP->Head.msgh_remote_port = task;
+    InP->Head.msgh_local_port = mig_get_local_port();
+    InP->Head.msgh_id = 3403;
+#endif
+
+    printf("    InP->msgh_body.msgh_descriptor_count  %p %p\n", ((void*)&    InP->msgh_body.msgh_descriptor_count ) - ((void*)InP), sizeof(    InP->msgh_body.msgh_descriptor_count ));
+    printf("    InP->init_port_set.address  %p %p\n", ((void*)&    InP->init_port_set.address ) - ((void*)InP), sizeof(    InP->init_port_set.address ));
+    printf("    InP->init_port_set.count  %p %p\n", ((void*)&    InP->init_port_set.count ) - ((void*)InP), sizeof(    InP->init_port_set.count ));
+    printf("    InP->init_port_set  %p\n", ((void*)&    InP->init_port_set ) - ((void*)InP));
+    //printf("    InP->init_port_set.disposition  %p %p\n", ((void*)&    InP->init_port_set.disposition ) - ((void*)InP), sizeof(    InP->init_port_set.disposition ));
+    //printf("    InP->init_port_set.deallocate  %p %p\n", ((void*)&    InP->init_port_set.deallocate ) - ((void*)InP), sizeof(    InP->init_port_set.deallocate ));
+    //printf("    InP->init_port_set.type  %p %p\n", ((void*)&    InP->init_port_set.type ) - ((void*)InP), sizeof(    InP->init_port_set.type ));
+    printf("    InP->NDR  %p %p\n", ((void*)&    InP->NDR ) - ((void*)InP), sizeof(    InP->NDR ));
+    printf("    InP->init_port_setCnt  %p %p\n", ((void*)&    InP->init_port_setCnt ) - ((void*)InP), sizeof(    InP->init_port_setCnt ));
+    printf("    InP->Head.msgh_bits  %p %p\n", ((void*)&    InP->Head.msgh_bits ) - ((void*)InP), sizeof(    InP->Head.msgh_bits ));
+    printf("    InP->Head.msgh_remote_port  %p %p\n", ((void*)&    InP->Head.msgh_remote_port ) - ((void*)InP), sizeof(    InP->Head.msgh_remote_port ));
+    printf("    InP->Head.msgh_local_port  %p %p\n", ((void*)&    InP->Head.msgh_local_port ) - ((void*)InP), sizeof(    InP->Head.msgh_local_port ));
+    printf("    InP->Head.msgh_id  %p %p\n", ((void*)&    InP->Head.msgh_id ) - ((void*)InP), sizeof(    InP->Head.msgh_id ));
+    printf("0x%08x\n", MACH_SEND_MSG|MACH_RCV_MSG|MACH_MSG_OPTION_NONE);
+    printf("0x%08x 0x%08x\n", (mach_msg_size_t)sizeof(Request), (mach_msg_size_t)sizeof(Reply));
+    printf("0x%08x\n", ((void*)&OutP->RetCode) - ((void*)&OutP));
+
+#if 0
+    kern_return_t ret = mach_msg(&InP->Head, MACH_SEND_MSG|MACH_RCV_MSG|MACH_MSG_OPTION_NONE, (mach_msg_size_t)sizeof(Request), (mach_msg_size_t)sizeof(Reply), InP->Head.msgh_local_port, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+    if(ret == KERN_SUCCESS)
+    {
+        ret = OutP->RetCode;
+    }
+    return ret;
+#endif
 
 /*
     for (int i = 0; i < (sizeof(Request) + number_port_descs * sizeof(mach_msg_ool_ports_descriptor_t)); i++) {

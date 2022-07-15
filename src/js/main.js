@@ -77,14 +77,16 @@ function main() {
 	large_buf[0] = 0x41424344;
 	printf("%x\n", read_u32(large_buf_ptr));
 
+	setup_fancy_rw();
+
 //	csbypass();
 
 //	return;
 
-	setup_fancy_rw();
 
 	printf("%s\n", hexdump(read_buf(0x422200, 0x200), 8, 2, 0x422200, 8, '0'));
-	
+
+//return;
 	var tfp0 = get_kernel_task();
 	
 	printf("tfp0=%x\n", tfp0);

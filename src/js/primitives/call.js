@@ -11,6 +11,7 @@ if (build_for == N94AP_13G37) {
 	var pthread_exit = 0x20633048 | 1;
 	var pthread_join = 0x20636af4 | 1;
 	var add_sp_0x3c = 0x23d72b5a | 1;
+	var NDR_record = 0x36ebf00c;
 } else if (build_for == N78AP_13G36) {
 	var __stack_chk_fail_lazy_addy = 0x347f7c48;
 	var __stack_chk_fail_resolver = 0x23d751fc;
@@ -19,6 +20,7 @@ if (build_for == N94AP_13G37) {
 	var pthread_exit = 0x20633048 | 1;
 	var pthread_join = 0x20636af4 | 1;
 	var add_sp_0x3c = 0x23d72b5a | 1;
+	var NDR_record = 0x364d200c;
 }
 var reserve_addr = 0x1a0000;
 var sym_cache = {};
@@ -410,8 +412,12 @@ function scall() {
 //	printf("%s\n", args_to_pass.toString());
 
 	if (args_to_pass.length > 5 || force_callnarg) {
+//		if (sptr_len > 100)
+//			call4arg(sym_cache["puts"], sptr("callnarg"), 0, 0, 0);
 		return callnarg.apply(this, args_to_pass);
 	} else {
+//		if (sptr_len > 100)
+//			call4arg(sym_cache["puts"], sptr("call4arg"), 0, 0, 0);
 		var count_to_me = 5 - arguments.length;
 		for (var i = 0; i < count_to_me; i++) {
 			args_to_pass.push(0);

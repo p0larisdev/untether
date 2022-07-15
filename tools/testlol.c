@@ -217,7 +217,7 @@ int main(int argc, char* argv[]) {
     printf("    InP->msgh_body.msgh_descriptor_count  %p %p\n", ((void*)&    InP->msgh_body.msgh_descriptor_count ) - ((void*)InP), sizeof(    InP->msgh_body.msgh_descriptor_count ));
     printf("    InP->init_port_set.address  %p %p\n", ((void*)&    InP->init_port_set.address ) - ((void*)InP), sizeof(    InP->init_port_set.address ));
     printf("    InP->init_port_set.count  %p %p\n", ((void*)&    InP->init_port_set.count ) - ((void*)InP), sizeof(    InP->init_port_set.count ));
-    printf("    InP->init_port_set  %p\n", ((void*)&    InP->init_port_set ) - ((void*)InP));
+    printf("    InP->init_port_set  %p %p\n", ((void*)&    InP->init_port_set ) - ((void*)InP), sizeof(InP->init_port_set));
     //printf("    InP->init_port_set.disposition  %p %p\n", ((void*)&    InP->init_port_set.disposition ) - ((void*)InP), sizeof(    InP->init_port_set.disposition ));
     //printf("    InP->init_port_set.deallocate  %p %p\n", ((void*)&    InP->init_port_set.deallocate ) - ((void*)InP), sizeof(    InP->init_port_set.deallocate ));
     //printf("    InP->init_port_set.type  %p %p\n", ((void*)&    InP->init_port_set.type ) - ((void*)InP), sizeof(    InP->init_port_set.type ));
@@ -230,6 +230,30 @@ int main(int argc, char* argv[]) {
     printf("0x%08x\n", MACH_SEND_MSG|MACH_RCV_MSG|MACH_MSG_OPTION_NONE);
     printf("0x%08x 0x%08x\n", (mach_msg_size_t)sizeof(Request), (mach_msg_size_t)sizeof(Reply));
     printf("0x%08x\n", ((void*)&OutP->RetCode) - ((void*)&OutP));
+
+    printf("%x\n", offsetof(kport_t, ip_kobject));
+    printf("%x\n", sizeof(kport_t));
+
+    printf("%x %x\n", 0x2130000,  ((19 << 16) + (MACH_MSG_OOL_PORTS_DESCRIPTOR << 24)));
+
+    mach_port_t *arrz=0;
+    printf("%p %p\n", arrz, &arrz);
+
+
+#pragma pack(4)
+typedef struct {
+    mach_msg_header_t Head;
+    mach_msg_body_t msgh_body;
+    mach_msg_ool_ports_descriptor_t init_port_set[];
+} Request2;
+#pragma pack()
+    printf("%x %x\n", sizeof(Request2) + 5 * sizeof(mach_msg_ool_ports_descriptor_t) + sizeof(mach_msg_trailer_t), 0x1c + (5 * 0xc) + 0x8);
+
+
+    kport_t kportaaa[2] = {};
+    uintptr_t *ptraaa = (uintptr_t*)(kportaaa + 1);
+
+    printf("%p\n", ((void*)ptraaa) - ((void*)kportaaa));
 
 #if 0
     kern_return_t ret = mach_msg(&InP->Head, MACH_SEND_MSG|MACH_RCV_MSG|MACH_MSG_OPTION_NONE, (mach_msg_size_t)sizeof(Request), (mach_msg_size_t)sizeof(Reply), InP->Head.msgh_local_port, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);

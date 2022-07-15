@@ -254,6 +254,7 @@ function _sptr(s) {
 	}
 	write_str(global_sptr_addy, s);
 	global_sptr_addy += s.length;
+	sptr_len += s.length;
 	return global_sptr_addy - s.length;
 }
 
@@ -281,6 +282,7 @@ function shit_heap(v) {
 	}
 //	write_str(global_sptr_addy, s);
 	global_sptr_addy += v;
+	sptr_len += v;
 	return global_sptr_addy - v;
 }
 

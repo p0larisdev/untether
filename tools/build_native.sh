@@ -7,6 +7,10 @@ rm bin/testlol
 gcc testlol.c -o bin/testlol --std=c99
 ldid -S bin/testlol
 
+rm bin/fuck_aslr
+gcc fuck_aslr.c -o bin/fuck_aslr --std=c99
+ldid -Sent.xml bin/fuck_aslr
+
 rm bin/935csbypass
 gcc 935csbypass.c -o bin/935csbypass --std=c99 -marm
 ldid -S bin/935csbypass

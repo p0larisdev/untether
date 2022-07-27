@@ -1,7 +1,7 @@
 var N94AP_13G37 = 0x0;
 var N78AP_13G36 = 0x1;
 
-var build_for = N94AP_13G37;
+var build_for = N78AP_13G36;
 
 if (build_for == N94AP_13G37) {
 	var __stack_chk_fail_lazy_addy = 0x346afc48;

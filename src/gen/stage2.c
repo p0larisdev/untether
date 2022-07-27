@@ -219,7 +219,7 @@
 } while (0)
 
 #define PRINT_STILL_HERE() do {						\
-/*	CALL_1ARG(base + printf_addr, 0x109000);	*/\
+	CALL_1ARG(base + printf_addr, 0x109000);	\
 } while (0)
 
 uintptr_t get_dyld_shc_slide(void) {

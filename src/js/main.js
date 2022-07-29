@@ -79,9 +79,9 @@ function main() {
 
 	setup_fancy_rw();
 
-//	csbypass();
+	csbypass();
 
-//	return;
+	return;
 
 
 	printf("%s\n", hexdump(read_buf(0x422200, 0x200), 8, 2, 0x422200, 8, '0'));

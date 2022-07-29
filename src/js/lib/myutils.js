@@ -126,3 +126,5 @@ var mig_get_reply_port = scall_wrapper("mig_get_reply_port");
 var mach_ports_lookup = scall_wrapper("mach_ports_lookup");
 var mach_port_destroy = scall_wrapper("mach_port_destroy");
 var pid_for_task = scall_wrapper("pid_for_task");
+var __CFStringMakeConstantString = scall_wrapper("__CFStringMakeConstantString");
+var CFStringCreateWithCString = scall_wrapper("CFStringCreateWithCString");

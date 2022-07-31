@@ -2,8 +2,8 @@
 *this is a work-in-progress.*
 
 gets ROP in racoon, then gets JS code exec with RWC primitives (arbitrary r/w,
-currently up to 26-arg call primitive), then uses qwertyoruiop's 935csbypass to
-get native code execution
+currently up to 26-arg call primitive), then loads in another JS file & execs
+it
 
 current offsets are included for `iPhone4,1` on `9.3.6 (13G37)` & `iPod5,1` on
 `9.3.5 (13G36)`. it may work on other devices and/or firmwares, but that's

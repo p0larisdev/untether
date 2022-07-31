@@ -100,7 +100,9 @@ function parse_nvram_options() {
 			}
 
 			if (boot_args_js_str.includes("p0laris_options")) {
-				p0laris.options = JSON.parse(boot_args_js_str.substr(boot_args_js_str.indexOf("p0laris_options") + "p0laris_options".length, boot_args_js_str.length - 1));
+				var p0laris_options_index = boot_args_js_str.indexOf("p0laris_options") + "p0laris_options".length + 2;
+				var p0laris_options_js_str = boot_args_js_str.substr(p0laris_options_index, boot_args_js_str.length - 2 - p0laris_options_index);
+				p0laris.options = JSON.parse(p0laris_options_js_str);
 			}
 		}
 	}

@@ -88,17 +88,20 @@ function parse_nvram_options() {
 	var registry_entry = IORegistryEntryFromPath(kIOMasterPortDefault, "IODeviceTree:/options");
 
 	if (registry_entry) {
-		var p0laris_options_size = shit_heap(4);
-		write_u32(p0laris_options_size, 0x4000);
-		var p0laris_options = malloc(read_u32(p0laris_options_size));
+		var boot_args_size = shit_heap(4);
+		write_u32(boot_args_size, 0x4000);
+		var boot_args = malloc(read_u32(boot_args_size));
 
-		if (IORegistryEntryGetProperty(registry_entry, "p0laris_options", p0laris_options, p0laris_options_size) == KERN_SUCCESS) {
-			var p0laris_options_buf = read_buf(p0laris_options, read_u32(p0laris_options_size));
-			var p0laris_options_js_str = "";
-			for (var i = 0; i < p0laris_options_buf.length; i++) {
-				p0laris_options_js_str += String.fromCharCode(p0laris_options_buf[i]);
+		if (IORegistryEntryGetProperty(registry_entry, "boot-args", boot_args, boot_args_size) == KERN_SUCCESS) {
+			var boot_args_buf = read_buf(boot_args, read_u32(boot_args_size));
+			var boot_args_js_str = "";
+			for (var i = 0; i < boot_args_buf.length; i++) {
+				boot_args_js_str += String.fromCharCode(boot_args_buf[i]);
 			}
-			p0laris.options = JSON.parse(p0laris_options_js_str);
+
+			if (boot_args_js_str.includes("p0laris_options")) {
+				p0laris.options = JSON.parse(boot_args_js_str.substr(boot_args_js_str.indexOf("p0laris_options") + "p0laris_options".length, boot_args_js_str.length - 1));
+			}
 		}
 	}
 }
@@ -137,6 +140,7 @@ function main() {
 	p0laris_object_general();
 
 	if (p0laris.options.sleep_spin === true) {
+		syslog(LOG_SYSLOG, "[*] sleep spinning");
 		while (1) {
 			sleep(3600);
 		}

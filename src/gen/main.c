@@ -206,12 +206,12 @@ int main(int   argc,
 
 	fprintf(stderr, "0x%x\n", RTLD_DEFAULT);
 
-	uint32_t	stack_base					= 0x1c7718; // my shell setup
+//	uint32_t	stack_base					= 0x1c7718; // my shell setup
 //	uint32_t	stack_base					= 0x1c7708; // my shell setup
 //	uint32_t	stack_base					= 0x1c7728; // my shell setup
 //	uint32_t	stack_base					= 0x1c77a8	; // my 4s shell setup
 //	uint32_t	stack_base					= 0x1c2e48; // my lldb
-//	uint32_t	stack_base					= 0x1c7d68; // btserver env
+	uint32_t	stack_base					= 0x1c7d68; // btserver env
 //	uint32_t	stack_base					= 0x1c7dd8; // wifiFirmwareLoader env
 	uint32_t	magic_trigger_addr			= 0xb6074;
 

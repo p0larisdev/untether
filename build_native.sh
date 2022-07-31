@@ -5,6 +5,9 @@ find src/js -name '*.js' -exec cat {} \; >> exp.js
 echo >> exp.js
 echo "main();" >> exp.js
 
+rm stage4.js
+find src/stage4 -name '*.js' -exec cat {} \; >> stage4.js
+
 # build for host
 gcc	-I $(pwd)/inc/															\
 		src/gen/main.c														\

@@ -126,12 +126,6 @@ function main() {
 
 	var dyld_shc_slide = get_dyld_shc_slide();
 
-	sym_cache["JSStringCreateWithUTF8CString"] = JSStringCreateWithUTF8CString + dyld_shc_slide;
-	sym_cache["JSObjectGetProperty"] = JSObjectGetProperty + dyld_shc_slide;
-	sym_cache["JSContextGetGlobalObject"] = JSContextGetGlobalObject + dyld_shc_slide;
-
-//	prep_shit();
-
 	setup_fancy_rw();
 
 	parse_nvram_options();

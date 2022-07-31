@@ -31,6 +31,9 @@ don't do:
 
 `p0laris_options='{"sleep_spin":true}' debug=0x1 -v`
 
+`sleep_spin` causes `stage3` to run `while (true) {sleep(3600);};`, so it will
+not get to `stage4`, and exploit the kernel, or whatever in `stage4`.
+
 ### current install steps
 - procure an `iPhone4,1` on `9.3.6 (13G37)`
 - jailbreak with p0laris (or Phoenix if you're old fashioned)

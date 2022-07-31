@@ -17,8 +17,8 @@ function main() {
 	p0laris_log("[*] we out here");
 	p0laris_log("[*] landed in stage4");
 
-	printf("[*] p0laris.dyld_shc_slide=0x%08x\n", p0laris.dyld_shc_slide);
-	printf("[*] p0laris.racoon_slide=0x%08x\n", p0laris.racoon_slide);
+	p0laris_log("[*] p0laris.dyld_shc_slide=0x%08x\n", p0laris.dyld_shc_slide);
+	p0laris_log("[*] p0laris.racoon_slide=0x%08x\n", p0laris.racoon_slide);
 
 	syslog(LOG_SYSLOG, "__p0laris_LOG_END__");
 	return 0;

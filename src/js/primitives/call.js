@@ -403,7 +403,7 @@ function scall() {
 			args_to_pass.push(sptr(arguments[i]));
 		} else {
 			args_to_pass.push(arguments[i]);
-			if ((arguments[i] & 0xffff0000 == 0xffff0000 || arguments[i] & 0xffff0000 == 0xfffe0000) && (i == 1 || i == 3)) {
+			if ((arguments[i] & 0xffff0000 == 0xffff0000 || arguments[i] & 0xffff0000 == 0xfffe0000)/* && (i == 2 || i == 4)*/) {
 				force_callnarg = true;
 			}
 		}

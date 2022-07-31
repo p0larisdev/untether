@@ -15,6 +15,9 @@ void fuck(char* s) {
 	printf("var %s_addr = 0x%08x;\n", s, dlsym_cf(s));
 }
 
+extern uint32_t bootstrap_port;
+
+
 int main(int argc, char* argv[]) {
 	printf("#define PRINTF_ADDR 0x%x\n", dlsym(RTLD_DEFAULT, "printf"));
 //	printf("%x %x %x %x %x %x %x %x\n", RTLD_NOW, dlsym_cf("kCFTypeDictionaryKeyCallBacks"), 0x41414141);//, &kCFTypeDictionaryValueCallBacks, kCFNumberSInt32Type);
@@ -24,5 +27,6 @@ int main(int argc, char* argv[]) {
 //	fuck("kCFNumberSInt32Type");
 	fuck("CFDictionarySetValue");
 	fuck("CFNumberCreate");
+	printf("%x %x %x %x %x\n", SEEK_SET, SEEK_CUR, SEEK_END, RTLD_DEFAULT, bootstrap_port);
 	return 0;
 }

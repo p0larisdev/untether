@@ -1,0 +1,1 @@
+tools/bin/fuck_aslr 0x1; cd tools; ./build_native.sh; cd ~; cd untether; ./build_native.sh; ./install_native.sh; rm /var/mobile/Library/Logs/CrashReporter/racoon*; /usr/libexec/dhcpd -q -cf old_exp.conf; sleep 1; nano /var/mobile/Library/Logs/CrashReporter/racoon

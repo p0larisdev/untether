@@ -21,3 +21,6 @@ gcc	-I $(pwd)/inc/															\
 		--std=c99
 
 ldid -Sent.xml bin/main_arm
+
+as src/native/payload.s -o bin/payload.o
+objcopy -O binary bin/payload.o bin/payload.bin

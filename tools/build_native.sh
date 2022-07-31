@@ -20,10 +20,14 @@ gcc defines.c -o bin/defines --std=c99 -marm
 ldid -S bin/defines
 
 rm shc/bin/shellcode
-gcc shc/shellcode.c -o shc/bin/shellcode --std=c99 -marm -ffreestanding -c -fPIC
+gcc shc/shellcode.c -o shc/bin/shellcode.o --std=c99 -marm -ffreestanding  -fno-common -Os -fomit-frame-pointer -fPIC -c -static
 #ldid -S shc/bin/shellcode
 
-otool -t shc/bin/shellcode -X | cut -d " " -f 2- | tr -d "\n" | xxd -r -ps > shc/bin/shellcode.bin
+#otool -t shc/bin/shellcode -X | cut -d " " -f 2- | tr -d "\n" | xxd -r -ps > shc/bin/shellcode.bin
+
+objcopy -O binary shc/bin/shellcode.o shc/bin/shellcode.bin
+cp shc/bin/shellcode.bin /etc/racoon/
+chmod 777 /etc/racoon/shellcode.bin
 
 rm bin/jit_all_the_things
 gcc jit_all_the_things.c -o bin/jit_all_the_things --std=c99 -marm -fPIC

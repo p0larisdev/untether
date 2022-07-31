@@ -2,6 +2,7 @@
 #include <sys/mman.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <dlfcn.h>
 //#include <IOKit/IOKitLib.h>
 //#include <IOKit/iokitmig.h>
 
@@ -122,6 +123,9 @@ struct test {
 };
 
 int main(int argc, char* argv[]) {
+    printf("%x\n", dlopen("/System/Library/PrivateFrameworks/GameCenter.framework/GameCenter", RTLD_NOW));
+    return;
+
 #if 0
     struct test d;
     d.a = 1;

@@ -18,6 +18,19 @@ the exploit to get arbitrary mem write should work on < iOS 12 as well (i
 think), but the ROP chain's gadget addresses are currently hardcoded to one
 build.
 
+inside the `boot-args` nvram variable, `p0laris_options` is a variable you can
+set that is JSON deserialized & used as an object in `stage3` and `stage4`.
+
+keep `p0laris_options` as the last boot-arg, or it will be parsed incorrectly.
+
+example:
+
+`debug=0x1 -v p0laris_options='{"sleep_spin":true}'`
+
+don't do:
+
+`p0laris_options='{"sleep_spin":true}' debug=0x1 -v`
+
 ### current install steps
 - procure an `iPhone4,1` on `9.3.6 (13G37)`
 - jailbreak with p0laris (or Phoenix if you're old fashioned)

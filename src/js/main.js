@@ -137,6 +137,7 @@ function main() {
 	p0laris_object_general();
 
 	if (p0laris.options.sleep_spin === true) {
+		syslog(LOG_SYSLOG, "[*] sleep spinning");
 		while (1) {
 			sleep(3600);
 		}

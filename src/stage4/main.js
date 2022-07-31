@@ -20,6 +20,12 @@ function main() {
 	p0laris_log("[*] p0laris.dyld_shc_slide=0x%08x\n", p0laris.dyld_shc_slide);
 	p0laris_log("[*] p0laris.racoon_slide=0x%08x\n", p0laris.racoon_slide);
 
+//	printf = p0laris_log;
+
+	printf("test");
+
+	var tfp0 = get_kernel_task();
+
 	syslog(LOG_SYSLOG, "__p0laris_LOG_END__");
 	return 0;
 }

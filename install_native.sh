@@ -8,11 +8,11 @@
 bin/main_arm -f /usr/sbin/racoon -j exp.js -o racoon.conf
 cp racoon.conf /etc/racoon/racoon.conf
 
-rm /var/root/stage4.js
-touch /var/root/stage4.js
-cat stage4.js > /var/root/stage4.js
-chmod 777 /var/root/stage4.js
-ln /var/root/stage4.js /var/mobile/Media/stage4.js
+mkdir /var/root/p0laris
+rm /var/root/p0laris/stage4.js
+cat stage4.js > /var/root/p0laris/stage4.js
+chmod 777 /var/root/p0laris/stage4.js
+ln /var/root/p0laris /var/mobile/Media/p0laris
 
 #bin/main -f ~/racoon -j ../lol.js | ssh root@localhost -p 2222 "cat > /etc/racoon/racoon.conf"
 

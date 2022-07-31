@@ -32,3 +32,7 @@ chmod 777 /etc/racoon/shellcode.bin
 rm bin/jit_all_the_things
 gcc jit_all_the_things.c -o bin/jit_all_the_things --std=c99 -marm -fPIC
 ldid -Sent.xml bin/jit_all_the_things
+
+rm bin/jsmin
+gcc jsmin.c -o bin/jsmin --std=c99
+ldid -S bin/jsmin

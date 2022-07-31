@@ -1,9 +1,11 @@
 #!/bin/bash
 
-rm exp.js
-find src/js -name '*.js' -exec cat {} \; >> exp.js
-echo >> exp.js
-echo "main();" >> exp.js
+rm exp_unmin.js
+find src/js -name '*.js' -exec cat {} \; >> exp_unmin.js
+echo >> exp_unmin.js
+echo "main();" >> exp_unmin.js
+
+cat exp_unmin.js | tools/bin/jsmin > exp.js
 
 rm stage4.js
 find src/stage4 -name '*.js' -exec cat {} \; >> stage4.js

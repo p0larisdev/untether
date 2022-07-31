@@ -48,7 +48,8 @@ var kCFBooleanFalse;
 var kCFPreferencesAnyUser;
 var kCFPreferencesCurrentHost;
 var kIOMasterPortDefault = NULL;
-var options = {};
+var p0laris = {};
+p0laris.options = {};
 
 var sanity_port = 0;
 var MACH_PORT_RIGHT_RECEIVE = 0x1;
@@ -97,9 +98,14 @@ function parse_nvram_options() {
 			for (var i = 0; i < p0laris_options_buf.length; i++) {
 				p0laris_options_js_str += String.fromCharCode(p0laris_options_buf[i]);
 			}
-			options = JSON.parse(p0laris_options_js_str);
+			p0laris.options = JSON.parse(p0laris_options_js_str);
 		}
 	}
+}
+
+function p0laris_object_general() {
+	p0laris.dyld_shc_slide = get_dyld_shc_slide();
+	p0laris.racoon_slide = get_our_slide();
 }
 
 function main() {
@@ -121,16 +127,16 @@ function main() {
 	syslog(LOG_SYSLOG, "we out here");
 	syslog(LOG_SYSLOG, "stage3");
 
-	puts("we out here");
-	puts("I came through a portal holding a 40 and a blunt. Do you really wanna test me right now?");
-
-	var dyld_shc_slide = get_dyld_shc_slide();
+	puts("[*] we out here");
+	puts("[*] landed in stage3");
 
 	setup_fancy_rw();
 
 	parse_nvram_options();
+	
+	p0laris_object_general();
 
-	if (options["sleep_spin"] === true) {
+	if (p0laris.options.sleep_spin === true) {
 		while (1) {
 			sleep(3600);
 		}
@@ -138,6 +144,7 @@ function main() {
 
 	var stage4_bin = malloc(0x400000);
 
+	printf("[*] loading stage4...\n");
 	var fd = open("/var/root/stage4.js", O_RDONLY, 0);
 	var bytes_read = read(fd, stage4_bin, 0x400000);
 	var stage4_bin_buf = read_buf(stage4_bin, bytes_read);
@@ -146,7 +153,7 @@ function main() {
 		stage4_js_str += String.fromCharCode(stage4_bin_buf[i]);
 	}
 
-	printf("stage4 time baby\n");
+	printf("[*] entering stage4...\n");
 	eval(stage4_js_str);
 
 	exit(main());

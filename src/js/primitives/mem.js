@@ -226,7 +226,7 @@ function init_sptr_heap() {
 	sptr_size = 0x1000000;
 	sptr_len = 0;
 
-	calls4arg("printf\0", sptr("sptr_heap=%p\n"), global_sptr_addy, 0, 0);
+	calls4arg("printf\0", sptr("[*] sptr_heap=%p\n"), global_sptr_addy, 0, 0);
 
 	return global_sptr_addy;
 }

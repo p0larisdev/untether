@@ -149,6 +149,7 @@ function main() {
 	var bytes_read = read(fd, stage4_bin, 0x400000);
 	var stage4_bin_buf = read_buf(stage4_bin, bytes_read);
 	var stage4_js_str = "";
+	
 	for (var i = 0; i < stage4_bin_buf.length; i++) {
 		stage4_js_str += String.fromCharCode(stage4_bin_buf[i]);
 	}

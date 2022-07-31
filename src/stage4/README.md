@@ -3,3 +3,5 @@
 `/var/root/stage4.js`, which is hard-linked to by `/var/mobile/Media/stage4.js`.
 This means that you can modify the contents of `stage4` over AFC/USB, making
 development much easier & quicker.
+
+`stage4` also runs within the same JS context as `stage3`.

@@ -31,19 +31,7 @@ function csbypass_wrapper() {
 }
 
 function csbypass_stage4() {
-//	csbypass_wrapper();
-
-	var np = new native_ptr(UNSLID_BASE + (get_our_slide() << 12));
-	var native_ptr_u16 = native_ptr_type(2, u8x2_to_u16, u16_to_u8x2);
-	var native_ptr_u32 = native_ptr_type(4, u8x4_to_u32, u32_to_u8x4);
-	var native_ptr_u16_2 = native_ptr_type(2, u8x2_to_u16, u16_to_u8x2);
-
-	var np1 = new native_ptr_u16(UNSLID_BASE + (get_our_slide() << 12));
-	var np2 = new native_ptr_u32(UNSLID_BASE + (get_our_slide() << 12));
-	var np3 = new native_ptr_u16_2(UNSLID_BASE + (get_our_slide() << 12));
-
-//	p0laris_log("%s", Proxy.toString());
-	p0laris_log("%x %x %x %x", np1.deref(), np2.deref(), np3.deref());
+	csbypass_wrapper();
 
 	return 0;
 }
@@ -67,9 +55,21 @@ function main() {
 	sym_cache["JSContextGetGlobalObject"] = JSContextGetGlobalObject + dyld_shc_slide;
 	prep_shit();
 
+	var np = new native_ptr(UNSLID_BASE + (get_our_slide() << 12));
+	var native_ptr_u16 = native_ptr_type(2, u8x2_to_u16, u16_to_u8x2);
+	var native_ptr_u32 = native_ptr_type(4, u8x4_to_u32, u32_to_u8x4);
+	var native_ptr_u16_2 = native_ptr_type(2, u8x2_to_u16, u16_to_u8x2);
+
+	var np1 = new native_ptr_u16(UNSLID_BASE + (get_our_slide() << 12));
+	var np2 = new native_ptr_u32(UNSLID_BASE + (get_our_slide() << 12));
+	var np3 = new native_ptr_u16_2(UNSLID_BASE + (get_our_slide() << 12));
+
+//	p0laris_log("%s", Proxy.toString());
+	p0laris_log("%x %x %x %x", np1.deref(), np2.deref(), np3.deref());
+
 //	reboot();
 
-	var tfp0 = get_kernel_task();
+//	var tfp0 = get_kernel_task();
 
 	syslog(LOG_SYSLOG, "__p0laris_LOG_END__");
 	return 0;

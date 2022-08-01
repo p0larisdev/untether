@@ -53,7 +53,7 @@ class native_ptr {
 
 function native_ptr_type(size, buf_to_obj, obj_to_buf) {
 	class ret extends native_ptr {
-		
+		//
 	}
 
 	ret.prototype.predef = true;

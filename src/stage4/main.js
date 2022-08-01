@@ -20,8 +20,17 @@ function prep_shit() {
 	large_buf_ptr = leak_vec(large_buf);
 }
 
-function other_stage4() {
-	syslog(LOG_SYSLOG, "lol");
+function csbypass_wrapper() {
+	if (csbypass == undefined) {
+		p0laris_log("[*] you're probably running a public build of the untether. i don't have permission to distribute this code yet. sorry.");
+		return;
+	} else {
+		csbypass();
+	}
+}
+
+function csbypass_stage4() {
+	csbypass_wrapper();
 	return 0;
 }
 

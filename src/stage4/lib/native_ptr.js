@@ -5,8 +5,6 @@ class native_ptr {
 		this.count = arguments[0];
 		var our_proto = Object.getPrototypeOf(this);
 
-		p0laris_log(JSON.stringify(Object.getPrototypeOf(this)));
-
 		if (our_proto.predef == true) {
 			this.size = our_proto.size;
 			this.buf_to_obj = our_proto.buf_to_obj;
@@ -43,6 +41,8 @@ class native_ptr {
 		if (n === undefined) {
 			n = 0;
 		}
+
+		var buf_yahtzee = read_buf(this.addy + (n * this.size), this.size);
 
 		return this.buf_to_obj(read_buf(this.addy + (n * this.size), this.size));
 	}
@@ -140,6 +140,20 @@ function u32xn_to_u8xn(buf) {
 	return ret;
 }
 
+function u8xn_to_u32xn(buf) {
+	var ret = new Uint32Array(buf.length >>> 2);
+	
+	for (var i = 0; i < buf.length; i += 4) {
+		var tmp = [buf[(i) + 0],
+				   buf[(i) + 1],
+				   buf[(i) + 2],
+				   buf[(i) + 3]];
+		ret[i >> 2] = u8x4_to_u32(tmp);
+	}
+
+	return ret;
+}
+
 /*
 typedef struct{
 	mach_msg_bits_t       msgh_bits;
@@ -151,13 +165,38 @@ typedef struct{
 } mach_msg_header_t;
  */
 function mach_msg_header_t_buf_to_obj(buf) {
-	var ret = new Uint8Array(24);
+	var arr = u8xn_to_u32xn(buf);
+	var ret = {};
+
+	ret.msgh_bits = arr[0];
+	ret.msgh_size = arr[1];
+	ret.msgh_remote_port = arr[2];
+	ret.msgh_local_port = arr[3];
+	ret.msgh_voucher_port = arr[4];
+	ret.msgh_id = arr[5];
+
+	return ret;
+}
+
+function mach_msg_header_t_obj_to_buf(obj) {
+	var arr = [obj.msgh_bits,
+			   obj.msgh_size,
+			   obj.msgh_remote_port,
+			   obj.msgh_local_port,
+			   obj.msgh_voucher_port,
+			   obj.msgh_id];
+	var ret = u32xn_to_u8xn(arr);
+
+	return ret;
 }
 
 function Request_sp_buf_to_obj(buf) {
-
+//	var arr = [buf.msg]
 }
 
+var mach_msg_header_t = native_ptr_type(24,
+	mach_msg_header_t_buf_to_obj,
+	mach_msg_header_t_obj_to_buf);
 var mach_msg_ool_ports_descriptor_t = native_ptr_type(12,
-													  mach_msg_ool_ports_descriptor_t_buf_to_obj,
-													  mach_msg_ool_ports_descriptor_t_obj_to_buf);
+	mach_msg_ool_ports_descriptor_t_buf_to_obj,
+	mach_msg_ool_ports_descriptor_t_obj_to_buf);

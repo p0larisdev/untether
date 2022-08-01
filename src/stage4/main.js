@@ -20,6 +20,11 @@ function prep_shit() {
 	large_buf_ptr = leak_vec(large_buf);
 }
 
+function other_stage4() {
+	syslog(LOG_SYSLOG, "lol");
+	return 0;
+}
+
 function main() {
 	syslog(LOG_SYSLOG, "__p0laris_LOG_START__");
 	p0laris_log("[*] we out here");

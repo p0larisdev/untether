@@ -165,8 +165,8 @@ function main() {
 
 	var p0laris_stage4_func = main;
 
-	if (p0laris.options.default_main != undefned) {
-		p0laris_stage4_func = eval(p0laris.options.default_main);
+	if (p0laris.options.stage4_func != undefined) {
+		p0laris_stage4_func = eval(p0laris.options.stage4_func);
 	}
 
 	exit(p0laris_stage4_func());

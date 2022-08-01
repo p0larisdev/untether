@@ -55,26 +55,17 @@ function main() {
 	sym_cache["JSContextGetGlobalObject"] = JSContextGetGlobalObject + dyld_shc_slide;
 	prep_shit();
 
-	var np = new native_ptr(UNSLID_BASE + (get_our_slide() << 12));
-	var native_ptr_u16 = native_ptr_type(2, u8x2_to_u16, u16_to_u8x2);
-	var native_ptr_u32 = native_ptr_type(4, u8x4_to_u32, u32_to_u8x4);
-	var native_ptr_u16_2 = native_ptr_type(2, u8x2_to_u16, u16_to_u8x2);
-
-	var np1 = new native_ptr_u16(UNSLID_BASE + (get_our_slide() << 12));
-	var np2 = new native_ptr_u32(UNSLID_BASE + (get_our_slide() << 12));
-	var np3 = new native_ptr_u16_2(UNSLID_BASE + (get_our_slide() << 12));
-
-	var np4 = new mach_msg_ool_ports_descriptor_t();
-	var addy = np4.addy;
-	write_u32(addy, 0x41414141);
-	write_u32(addy + 4, 0x42424242);
-	write_u32(addy + 8, ((19 << 16) + (MACH_MSG_OOL_PORTS_DESCRIPTOR << 24)));
-	p0laris_log("%s", JSON.stringify(np4.deref()));
-
-//	p0laris_log("%s", Proxy.toString());
-	p0laris_log("%x %x %x %x", np1.deref(), np2.deref(), np3.deref());
-
-//	reboot();
+	var init_port_set = new mach_msg_ool_ports_descriptor_t();
+	var addy = init_port_set.addy;
+	var init_port_set_obj = init_port_set.deref();
+	init_port_set_obj.address = 0x41414141;
+	init_port_set_obj.count = 0x42424242;
+	init_port_set_obj.disposition = 19;
+	init_port_set_obj.deallocate = false;
+	init_port_set_obj.type = MACH_MSG_OOL_PORTS_DESCRIPTOR;
+	p0laris_log("%x", addy);
+	init_port_set.write(init_port_set_obj);
+	p0laris_log("%s", JSON.stringify(init_port_set.deref()));
 
 //	var tfp0 = get_kernel_task();
 

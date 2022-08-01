@@ -1,28 +1,24 @@
 class native_ptr {
 //	constructor(addy, size = 4, buf_to_obj = u8x4_to_u32) {
 	constructor() {
-		this.addy = arguments[0];
+		this.addy = arguments[1];
+		this.count = arguments[0];
 		var our_proto = Object.getPrototypeOf(this);
 
 		p0laris_log(JSON.stringify(Object.getPrototypeOf(this)));
 
 		if (our_proto.predef == true) {
-			p0laris_log("lol");
 			this.size = our_proto.size;
 			this.buf_to_obj = our_proto.buf_to_obj;
 			this.obj_to_buf = our_proto.obj_to_buf;
 		} else {
-			this.size = arguments[1];
-			this.buf_to_obj = arguments[2];
-			this.obj_to_buf = arguments[3];
+			this.size = arguments[2];
+			this.buf_to_obj = arguments[3];
+			this.obj_to_buf = arguments[4];
 		}
 
-		if (this.addy === undefined) {
-			this.addy = shit_heap(this.size);
-		}
-
-		if (our_proto.predef == true) {
-			return;
+		if (this.count === undefined) {
+			this.count = 1;
 		}
 
 		if (this.size === undefined) {
@@ -32,8 +28,13 @@ class native_ptr {
 		if (this.buf_to_obj === undefined) {
 			this.buf_to_obj = u8x4_to_u32;
 		}
+
 		if (this.obj_to_buf === undefined) {
 			this.obj_to_buf = u32_to_u8x4;
+		}
+
+		if (this.addy === undefined) {
+			this.addy = shit_heap(this.size * this.count);
 		}
 	}
 
@@ -94,6 +95,37 @@ function mach_msg_ool_ports_descriptor_t_buf_to_obj(buf) {
 	return ret;
 }
 
+function mach_msg_ool_ports_descriptor_t_obj_to_buf(obj) {
+	var ret = new Uint8Array(12);
+	var tmp;
+
+	tmp = u32_to_u8x4(obj.address);
+
+	ret[0] = tmp[0];
+	ret[1] = tmp[1];
+	ret[2] = tmp[2];
+	ret[3] = tmp[3];
+
+	tmp = u32_to_u8x4(obj.count);
+
+	ret[0 + 4] = tmp[0];
+	ret[1 + 4] = tmp[1];
+	ret[2 + 4] = tmp[2];
+	ret[3 + 4] = tmp[3];
+	
+	if (typeof obj.deallocate === 'boolean') {
+		ret[8] = obj.deallocate ? 1 : 0;
+	} else {
+		ret[8] = obj.deallocate;
+	}
+
+	ret[9] = obj.copy;
+	ret[10] = obj.disposition;
+	ret[11] = obj.type;
+
+	return ret;
+}
+
 var mach_msg_ool_ports_descriptor_t = native_ptr_type(12,
 													  mach_msg_ool_ports_descriptor_t_buf_to_obj,
-													  function(){});
+													  mach_msg_ool_ports_descriptor_t_obj_to_buf);

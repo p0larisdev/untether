@@ -55,6 +55,8 @@ function main() {
 	sym_cache["JSContextGetGlobalObject"] = JSContextGetGlobalObject + dyld_shc_slide;
 	prep_shit();
 
+	p0laris_log("%s", prim_hexdump(u32xn_to_u8xn([0x41424344, 0x45464748, 0x494a4b4c, 0x4d4e4f50])));
+
 	var init_port_set = new mach_msg_ool_ports_descriptor_t(4);
 	var addy = init_port_set.addy;
 	var init_port_set_obj = init_port_set.deref();

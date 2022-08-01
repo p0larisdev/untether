@@ -126,6 +126,38 @@ function mach_msg_ool_ports_descriptor_t_obj_to_buf(obj) {
 	return ret;
 }
 
+function u32xn_to_u8xn(buf) {
+	var ret = new Uint8Array(buf.length * 4);
+	
+	for (var i = 0; i < buf.length; i++) {
+		var tmp = u32_to_u8x4(buf[i]);
+		ret[(i << 2) + 0] = tmp[0];
+		ret[(i << 2) + 1] = tmp[1];
+		ret[(i << 2) + 2] = tmp[2];
+		ret[(i << 2) + 3] = tmp[3];
+	}
+
+	return ret;
+}
+
+/*
+typedef struct{
+	mach_msg_bits_t       msgh_bits;
+	mach_msg_size_t       msgh_size;
+	mach_port_t           msgh_remote_port;
+	mach_port_t           msgh_local_port;
+	mach_port_name_t      msgh_voucher_port;
+	mach_msg_id_t         msgh_id;
+} mach_msg_header_t;
+ */
+function mach_msg_header_t_buf_to_obj(buf) {
+	var ret = new Uint8Array(24);
+}
+
+function Request_sp_buf_to_obj(buf) {
+
+}
+
 var mach_msg_ool_ports_descriptor_t = native_ptr_type(12,
 													  mach_msg_ool_ports_descriptor_t_buf_to_obj,
 													  mach_msg_ool_ports_descriptor_t_obj_to_buf);

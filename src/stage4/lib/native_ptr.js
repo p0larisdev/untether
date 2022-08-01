@@ -226,7 +226,7 @@ function Request_sp_buf_to_obj(buf) {
 	for (var i = 0; i < (buf.length - 28) / 28; i++) {
 		p0laris_log("%d", i);
 		var init_port_set_buf = buf.subarray((i * 28) + 28);
-		ret.init_port_set.push(mach_msg_header_t_buf_to_obj(init_port_set_buf));
+		ret.init_port_set.push(mach_msg_ool_ports_descriptor_t_buf_to_obj(init_port_set_buf));
 	}
 
 	return ret;

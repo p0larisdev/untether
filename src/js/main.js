@@ -163,7 +163,13 @@ function main() {
 	printf("[*] entering stage4...\n");
 	eval(stage4_js_str);
 
-	exit(main());
+	var p0laris_stage4_func = main;
+
+	if (p0laris.options.default_main != undefned) {
+		p0laris_stage4_func = eval(p0laris.options.default_main);
+	}
+
+	exit(p0laris_stage4_func());
 
 	return;
 };

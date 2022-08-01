@@ -7,6 +7,7 @@ var listen = scall_wrapper("listen");
 var accept = scall_wrapper("accept");
 var close = scall_wrapper("close");
 var printf = scall_wrapper("printf");
+var reboot = scall_wrapper("reboot");
 var AF_INET = 2;
 var SOCK_DGRAM = 2;
 var SOCK_DGRAM = 2;
@@ -37,6 +38,8 @@ function main() {
 	sym_cache["JSObjectGetProperty"] = JSObjectGetProperty + dyld_shc_slide;
 	sym_cache["JSContextGetGlobalObject"] = JSContextGetGlobalObject + dyld_shc_slide;
 	prep_shit();
+
+//	reboot();
 
 	var tfp0 = get_kernel_task();
 

@@ -63,3 +63,30 @@ function native_ptr_type(size, buf_to_obj, obj_to_buf) {
 
 	return ret;
 }
+
+/*
+typedef struct{
+	void*                         address;
+	mach_msg_size_t               count;
+	boolean_t                     deallocate: 8;
+	mach_msg_copy_options_t       copy: 8;
+	mach_msg_type_name_t          disposition : 8;
+	mach_msg_descriptor_type_t    type : 8;
+} mach_msg_ool_ports_descriptor_t;
+ */
+function mach_msg_ool_ports_descriptor_t_buf_to_obj(buf) {
+	var ret = {};
+
+	ret.address = u8x4_to_u32(buf);
+	ret.count = u8x4_to_u32([buf[4], buf[5], buf[6], buf[7]]);
+	ret.deallocate = buf[8];
+	ret.copy = buf[9];
+	ret.disposition = buf[10];
+	ret.type = buf[11];
+
+	return ret;
+}
+
+var mach_msg_ool_ports_descriptor_t = native_ptr_type(12,
+													  mach_msg_ool_ports_descriptor_t_buf_to_obj,
+													  function(){});

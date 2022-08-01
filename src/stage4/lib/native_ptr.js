@@ -11,12 +11,19 @@ class native_ptr {
 			this.size = our_proto.size;
 			this.buf_to_obj = our_proto.buf_to_obj;
 			this.obj_to_buf = our_proto.obj_to_buf;
-			return;
+		} else {
+			this.size = arguments[1];
+			this.buf_to_obj = arguments[2];
+			this.obj_to_buf = arguments[3];
 		}
 
-		this.size = arguments[1];
-		this.buf_to_obj = arguments[2];
-		this.obj_to_buf = arguments[3];
+		if (this.addy === undefined) {
+			this.addy = shit_heap(this.size);
+		}
+
+		if (our_proto.predef == true) {
+			return;
+		}
 
 		if (this.size === undefined) {
 			this.size = 4;

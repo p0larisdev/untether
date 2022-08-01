@@ -55,7 +55,7 @@ function main() {
 	sym_cache["JSContextGetGlobalObject"] = JSContextGetGlobalObject + dyld_shc_slide;
 	prep_shit();
 
-	var init_port_set = new mach_msg_ool_ports_descriptor_t();
+	var init_port_set = new mach_msg_ool_ports_descriptor_t(4);
 	var addy = init_port_set.addy;
 	var init_port_set_obj = init_port_set.deref();
 	init_port_set_obj.address = 0x41414141;
@@ -64,8 +64,14 @@ function main() {
 	init_port_set_obj.deallocate = false;
 	init_port_set_obj.type = MACH_MSG_OOL_PORTS_DESCRIPTOR;
 	p0laris_log("%x", addy);
-	init_port_set.write(init_port_set_obj);
-	p0laris_log("%s", JSON.stringify(init_port_set.deref()));
+	init_port_set.write(init_port_set_obj, 0);
+	init_port_set.write(init_port_set_obj, 1);
+	init_port_set.write(init_port_set_obj, 2);
+	init_port_set.write(init_port_set_obj, 3);
+	p0laris_log("%s %s %s %s", JSON.stringify(init_port_set.deref(0)),
+							   JSON.stringify(init_port_set.deref(1)),
+							   JSON.stringify(init_port_set.deref(2)),
+							   JSON.stringify(init_port_set.deref(3)));
 
 //	var tfp0 = get_kernel_task();
 

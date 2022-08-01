@@ -82,6 +82,46 @@ function main() {
 	Head.write(Head_obj);
 	p0laris_log("%s", JSON.stringify(Head.deref()));
 
+	p0laris_log("here");
+
+	var req = new Request_sp(4);
+	p0laris_log("here");
+	var addy = req.addy;
+	p0laris_log("here");
+	var req_obj = req.deref();
+	p0laris_log("here");
+
+	req_obj.msgh_body.msgh_descriptor_count = 4;
+	p0laris_log("here");
+	for (var i = 0; i < 4; i++) {
+		req_obj.init_port_set[i].address = 0x1234;
+		req_obj.init_port_set[i].count = 0x1235;
+		req_obj.init_port_set[i].disposition = 19;
+		req_obj.init_port_set[i].deallocate = false;
+		req_obj.init_port_set[i].type = MACH_MSG_OOL_PORTS_DESCRIPTOR;
+	}
+
+	p0laris_log("here");
+	req_obj.Head.msgh_bits = MACH_MSGH_BITS_COMPLEX | MACH_MSGH_BITS(19, MACH_MSG_TYPE_MAKE_SEND_ONCE);
+	p0laris_log("here");
+	req_obj.Head.msgh_remote_port = 0x41424344;
+	p0laris_log("here");
+	req_obj.Head.msgh_local_port = 0x45464748;
+	p0laris_log("here");
+	req_obj.Head.msgh_id = 1337;
+
+	p0laris_log("here");
+	req.write(req_obj);
+	p0laris_log("here");
+	p0laris_log("%s", JSON.stringify(req.deref(), function (key, value) {
+		if (typeof value === 'number') {
+			return "0x" + value.toString(16);
+		}
+
+		return value;
+	}, "\t"));
+	p0laris_log("here");
+
 //	var tfp0 = get_kernel_task();
 
 	syslog(LOG_SYSLOG, "__p0laris_LOG_END__");

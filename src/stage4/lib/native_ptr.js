@@ -31,6 +31,11 @@ class native_ptr {
 			this.obj_to_buf = u32_to_u8x4;
 		}
 
+		if (Object.getPrototypeOf(this).deref_all != undefined) {
+			this.size *= this.count;
+			p0laris_log("get lucky %d", this.size);
+		}
+
 		if (this.addy === undefined) {
 			this.addy = shit_heap(this.size * this.count);
 		}
@@ -38,11 +43,10 @@ class native_ptr {
 
 	deref() {
 		var n = arguments[0];
+
 		if (n === undefined) {
 			n = 0;
 		}
-
-		var buf_yahtzee = read_buf(this.addy + (n * this.size), this.size);
 
 		return this.buf_to_obj(read_buf(this.addy + (n * this.size), this.size));
 	}
@@ -190,13 +194,89 @@ function mach_msg_header_t_obj_to_buf(obj) {
 	return ret;
 }
 
+function mach_msg_body_t_buf_to_obj(buf) {
+	var ret = {};
+
+	ret.msgh_descriptor_count = u32_to_u8x4(buf);
+
+	return ret;
+}
+
+function mach_msg_body_t_obj_to_buf(obj) {
+	var ret = u8x4_to_u32(obj.msgh_descriptor_count);
+
+	return ret;
+}
+
 function Request_sp_buf_to_obj(buf) {
-//	var arr = [buf.msg]
+	var ret = {};
+	p0laris_log("w00t %d %s", buf.length, Object.getOwnPropertyNames(Object.getPrototypeOf(buf)).toString());
+	var Head_buf = buf.subarray(0, 24);
+	p0laris_log("w00t");
+	var msgh_body_buf = buf.subarray(24, 28);
+	p0laris_log("w00t");
+	var init_port_set_buf = buf.subarray(28);
+	p0laris_log("w00t");
+	ret.Head = mach_msg_header_t_buf_to_obj(Head_buf);
+	p0laris_log("w00t");
+	ret.msgh_body = mach_msg_body_t_buf_to_obj(msgh_body_buf);
+	p0laris_log("w00t");
+	ret.init_port_set = new Array();
+	
+	for (var i = 0; i < (buf.length - 28) / 28; i++) {
+		p0laris_log("%d", i);
+		var init_port_set_buf = buf.subarray((i * 28) + 28);
+		ret.init_port_set.push(mach_msg_header_t_buf_to_obj(init_port_set_buf));
+	}
+
+	return ret;
+}
+
+function Request_sp_obj_to_buf(obj) {
+	var ret = new Uint8Array(this.size * this.count);
+	var tmp = mach_msg_header_t_obj_to_buf(obj.Head);
+	var begin = 0;
+	p0laris_log("w00t");
+	var i = 0;
+
+	begin = i;
+
+	for (; i < 24; i++) {
+		ret[i] = tmp[i - begin];
+	}
+
+	p0laris_log("w00t");
+	begin = i;
+
+	var tmp = mach_msg_body_t_obj_to_buf(obj.msgh_body);
+
+	for (; i < 28; i++) {
+		ret[i] = tmp[i - begin];
+	}
+
+	p0laris_log("w00t");
+	begin = i;
+
+	for (var i = 0; i < obj.init_port_set.length; i++) {
+		var tmp = mach_msg_ool_ports_descriptor_t_obj_to_buf(obj.init_port_set[i]);
+		for (var j = 0; j < tmp.length; j++) {
+			ret[begin + (i * 12) + j] = tmp[j];
+		}
+	}
+	p0laris_log("w00t");
+	return ret;
 }
 
 var mach_msg_header_t = native_ptr_type(24,
 	mach_msg_header_t_buf_to_obj,
 	mach_msg_header_t_obj_to_buf);
+var mach_msg_body_t = native_ptr_type(4,
+	mach_msg_body_t_buf_to_obj,
+	mach_msg_body_t_obj_to_buf);
 var mach_msg_ool_ports_descriptor_t = native_ptr_type(12,
 	mach_msg_ool_ports_descriptor_t_buf_to_obj,
 	mach_msg_ool_ports_descriptor_t_obj_to_buf);
+var Request_sp = native_ptr_type(24 + 4 + 12,
+	Request_sp_buf_to_obj,
+	Request_sp_obj_to_buf);
+Request_sp.prototype.deref_all = true;

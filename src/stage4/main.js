@@ -154,7 +154,9 @@ function main() {
 
 //	return;
 
-	var tfp0 = get_kernel_task();
+	r3gister(0x41, 0x42, 0x43, 0x44);
+
+//	var tfp0 = get_kernel_task();
 
 	syslog(LOG_SYSLOG, "__p0laris_LOG_END__");
 	return 0;

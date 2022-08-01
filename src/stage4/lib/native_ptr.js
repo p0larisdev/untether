@@ -271,8 +271,7 @@ function Request_r3_buf_to_obj(buf) {
 	return ret;
 }
 
-/*
-function Request_r3_buf_to_obj(buf) {
+function Request_r3_obj_to_buf(obj) {
 	var ret = new Uint8Array(this.size);
 	var tmp = mach_msg_header_t_obj_to_buf(obj.Head);
 	var begin = 0;
@@ -292,16 +291,32 @@ function Request_r3_buf_to_obj(buf) {
 		ret[i] = tmp[i - begin];
 	}
 
-	var tmp = mach_msg_ool_ports_descriptor_t_obj_to_buf(obj.init_port_set[i]);
+	var tmp = mach_msg_ool_ports_descriptor_t_obj_to_buf(obj.init_port_set);
 
 	begin = i;
 
-	for (; i < 36; i++) {
+	for (; i < 40; i++) {
 		ret[i] = tmp[i - begin];
 	}
 
+	var tmp = buf_ret(obj.NDR);
 
-}*/
+	begin = i;
+
+	for (; i < 48; i++) {
+		ret[i] = tmp[i - begin];
+	}
+
+	var tmp = u32_to_u8x4(obj.init_port_setCnt);
+
+	begin = i;
+
+	for (; i < 52; i++) {
+		ret[i] = tmp[i - begin];
+	}
+
+	return ret;
+}
 
 function buf_ret(buf) {
 	return buf;
@@ -333,7 +348,11 @@ var mach_msg_type_number_t = uint32_t;
 
 var Request_r3 = native_ptr_type(24 + 4 + 12 + 8 + 4,
 	Request_r3_buf_to_obj,
-	buf_ret);
+	Request_r3_obj_to_buf);
+
+/*var Reply_r3 = native_ptr_type(24 + 4 + 12 + 8 + 4,
+	Reply_r3_buf_to_obj,
+	Reply_r3_obj_to_buf);*/
 
 var mach_msg_trailer_type_t = uint32_t;
 var mach_msg_trailer_size_t = uint32_t;
